@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Phaser 3 Test Runner</title>
+    <title>Lazer Test Runner</title>
     <style>
         body {
             font-family: sans-serif;
@@ -40,10 +40,10 @@
     ?>
     <script type="text/babel">
 
-    System.baseURL = '../src/';
+    System.baseURL = '../../lazer/src/';
     System.transpiler = 'babel';
 
-    System.import('../wip/<?php echo $file ?>').then(some_module => {
+    System.import('../src/<?php echo $file ?>').then(some_module => {
 
         //  party time
 
@@ -61,13 +61,13 @@
     <?php
         $projects = scandir('.');
 
-        $ignore = array('.', '..', '.git', 'node_modules', 'assets', 'dist', 'src');
+        $ignore = array('.', '..', '.git', 'node_modules', 'assets', 'dist');
 
         foreach ($projects as $key => $value) {
 
             if (!in_array($value, $ignore) && substr($value, -2) === 'js')
             {
-                echo "<li><a href=\"debug.php?f=$value\">$value</a></li>";
+                echo "<li><a href=\"index.php?f=$value\">$value</a></li>";
             }
         }
     ?>
