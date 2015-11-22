@@ -1,8 +1,8 @@
 import Canvas from 'canvas/Canvas.js';
 import GetContext from 'canvas/GetContext.js';
-import BackgroundColor from 'canvas/BackgroundColor.js';
 import AddToDOM from 'dom/AddToDOM.js';
-import GetPixel from 'canvas/imagedata/GetPixel.js';
+import GetImageData from 'canvas/imagedata/GetImageData.js';
+import GetIndex from 'canvas/imagedata/GetIndex.js';
 import Loader from 'loader/Loader.js';
 
 export default class CanvasTest {
@@ -31,19 +31,16 @@ export default class CanvasTest {
 
         ctx.drawImage(file.data, 0, 0);
 
-        //  Get the ImageData
-        const imageData = ctx.getImageData(0, 0, 320, 200);
+        const imageData = GetImageData(ctx);
 
-        //  Get a pixel from the ImageData object
-        const pixel = GetPixel(imageData, 113, 126);
+        console.log(imageData.width, 'x', imageData.height);
 
-        console.log(imageData);
-        console.log(pixel);
-
-        //  Now let's set the rgb value we got as the canvas background color
-        const bgc = `rgba(${pixel.r}, ${pixel.g}, ${pixel.b}, ${255 / pixel.a})`;
-
-        BackgroundColor(this.canvas, bgc);
+        console.log('0 x 0 - index', GetIndex(imageData, 0, 0));
+        console.log('1 x 0 - index', GetIndex(imageData, 1, 0));
+        console.log('10 x 0 - index', GetIndex(imageData, 10, 0));
+        console.log('0 x 1 - index', GetIndex(imageData, 0, 1));
+        console.log('32 x 32 - index', GetIndex(imageData, 32, 32));
+        console.log('100 x 100 - index', GetIndex(imageData, 100, 100));
 
     }
 

@@ -2,8 +2,9 @@ import Canvas from 'canvas/Canvas.js';
 import GetContext from 'canvas/GetContext.js';
 import BackgroundColor from 'canvas/BackgroundColor.js';
 import AddToDOM from 'dom/AddToDOM.js';
-import GetPixel from 'canvas/imagedata/GetPixel.js';
+import SetPixel from 'canvas/pixels/SetPixel.js';
 import Loader from 'loader/Loader.js';
+import Between from 'math/Between.js';
 
 export default class CanvasTest {
 
@@ -12,6 +13,8 @@ export default class CanvasTest {
         this.canvas = Canvas(320, 200);
 
         AddToDOM(this.canvas, 'game');
+
+        BackgroundColor(this.canvas, '#000000');
 
         this.loader = new Loader();
 
@@ -31,19 +34,12 @@ export default class CanvasTest {
 
         ctx.drawImage(file.data, 0, 0);
 
-        //  Get the ImageData
-        const imageData = ctx.getImageData(0, 0, 320, 200);
+        //  Draw 200 random pixels
 
-        //  Get a pixel from the ImageData object
-        const pixel = GetPixel(imageData, 113, 126);
-
-        console.log(imageData);
-        console.log(pixel);
-
-        //  Now let's set the rgb value we got as the canvas background color
-        const bgc = `rgba(${pixel.r}, ${pixel.g}, ${pixel.b}, ${255 / pixel.a})`;
-
-        BackgroundColor(this.canvas, bgc);
+        for (let i = 0; i < 200; i++)
+        {
+            SetPixel(ctx, Between(0, 320), Between(0, 200), 255, 255, 255);
+        }
 
     }
 

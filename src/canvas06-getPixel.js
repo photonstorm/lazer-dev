@@ -2,7 +2,7 @@ import Canvas from 'canvas/Canvas.js';
 import GetContext from 'canvas/GetContext.js';
 import BackgroundColor from 'canvas/BackgroundColor.js';
 import AddToDOM from 'dom/AddToDOM.js';
-import GetPixel from 'canvas/GetPixel.js';
+import GetPixel from 'canvas/pixels/GetPixel.js';
 import Loader from 'loader/Loader.js';
 
 export default class CanvasTest {

@@ -2,8 +2,7 @@ import Canvas from 'canvas/Canvas.js';
 import GetContext from 'canvas/GetContext.js';
 import BackgroundColor from 'canvas/BackgroundColor.js';
 import AddToDOM from 'dom/AddToDOM.js';
-import SetPixel from 'canvas/SetPixel.js';
-import GetImageData from 'canvas/GetImageData.js';
+import SetPixel from 'canvas/pixels/SetPixel.js';
 import Loader from 'loader/Loader.js';
 
 export default class CanvasTest {
@@ -34,15 +33,12 @@ export default class CanvasTest {
 
         ctx.drawImage(file.data, 0, 0);
 
-        //  Get the ImageData
-        const imageData = GetImageData(ctx);
-
         //  Draws 4 purple pixels at 32x22
 
-        SetPixel(ctx, imageData, 32, 22, 255, 0, 255);
-        SetPixel(ctx, imageData, 33, 22, 255, 0, 255);
-        SetPixel(ctx, imageData, 32, 23, 255, 0, 255);
-        SetPixel(ctx, imageData, 33, 23, 255, 0, 255);
+        SetPixel(ctx, 32, 22, 255, 0, 255);
+        SetPixel(ctx, 33, 22, 255, 0, 255);
+        SetPixel(ctx, 32, 23, 255, 0, 255);
+        SetPixel(ctx, 33, 23, 255, 0, 255);
 
     }
 
