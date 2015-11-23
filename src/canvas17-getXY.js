@@ -2,7 +2,7 @@ import Canvas from 'canvas/Canvas.js';
 import GetContext from 'canvas/GetContext.js';
 import AddToDOM from 'dom/AddToDOM.js';
 import GetImageData from 'canvas/imagedata/GetImageData.js';
-import GetIndex from 'canvas/imagedata/GetIndex.js';
+import GetXY from 'canvas/imagedata/GetXY.js';
 import Loader from 'loader/Loader.js';
 
 export default class CanvasTest {
@@ -33,17 +33,17 @@ export default class CanvasTest {
 
         const imageData = GetImageData(ctx);
 
-        console.log(imageData.width, 'x', imageData.height, 'len', imageData.data.length);
+        console.log(imageData.width, 'x', imageData.height);
 
-        console.log('0 x 0 - index', GetIndex(imageData, 0, 0));
-        console.log('1 x 0 - index', GetIndex(imageData, 1, 0));
-        console.log('10 x 0 - index', GetIndex(imageData, 10, 0));
-        console.log('0 x 1 - index', GetIndex(imageData, 0, 1));
-        console.log('32 x 32 - index', GetIndex(imageData, 32, 32));
-        console.log('42 x 199 - index', GetIndex(imageData, 42, 199));
-        console.log('77 x 3 - index', GetIndex(imageData, 77, 3));
-        console.log('9 x 178 - index', GetIndex(imageData, 9, 178));
-        console.log('319 x 199 - index', GetIndex(imageData, 319, 199));
+        console.log('Index 0', GetXY(imageData, 0)); // 0x0
+        console.log('Index 4', GetXY(imageData, 4)); // 1x0
+        console.log('Index 40', GetXY(imageData, 40)); // 10x0
+        console.log('Index 1280', GetXY(imageData, 1280)); // 0x1
+        console.log('Index 41088', GetXY(imageData, 41088)); // 32x32
+        console.log('Index 254888', GetXY(imageData, 254888)); // 42x199
+        console.log('Index 4148', GetXY(imageData, 4148)); // 77x3
+        console.log('Index 227876', GetXY(imageData, 227876)); // 9x178
+        console.log('Index 255996', GetXY(imageData, 255996)); // 319x199
 
     }
 
