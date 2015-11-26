@@ -3,7 +3,7 @@ import GetContext from 'canvas/GetContext.js';
 import AddToDOM from 'dom/AddToDOM.js';
 import GetImageData from 'canvas/imagedata/GetImageData.js';
 import PutImageData from 'canvas/imagedata/PutImageData.js';
-import Convolve from 'canvas/filters/Convolve.js';
+import Blur from 'canvas/filters/Blur.js';
 import Loader from 'loader/Loader.js';
 
 export default class CanvasTest {
@@ -32,13 +32,7 @@ export default class CanvasTest {
 
         const imageData = GetImageData(ctx, 0, 0, 256, 256);
 
-        let weights = [ 
-            1, 1, 1,
-            1, -7, 1,
-            1, 1, 1
-        ];
-
-        Convolve(imageData, weights);
+        Blur(imageData);
 
         PutImageData(ctx, imageData, 256, 0);
 
