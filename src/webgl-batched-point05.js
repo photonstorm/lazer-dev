@@ -2,8 +2,10 @@ import MasterClock from 'time/MasterClock.js';
 import Canvas from 'canvas/Canvas.js';
 import AddToDOM from 'dom/AddToDOM.js';
 import WebGLBatchedPointRenderer from 'renderers/batch_point/WebGLBatchedPoint.js';
-import Vec2 from 'math/vector/Vec2.js';
+import Vec2 from 'math/vector/vec2/Vec2.js';
+import Vec2Rotate from 'math/vector/common/Rotate.js';
 import DegToRad from 'math/DegToRad.js';
+import Between from 'math/Between.js';
 
 export default class Particle {
 
@@ -16,9 +18,7 @@ export default class Particle {
 
         const a = 0 + (Math.random() * 90);
 
-        this.velocity.rotate(DegToRad(a));
-
-        this.index = renderer.addPoint(this.pos.x, this.pos.y);
+        Vec2Rotate(this.velocity, DegToRad(a));
 
         this.renderer = renderer;
 
@@ -38,7 +38,7 @@ export default class Particle {
             this.velocity.y *= -1;
         }
 
-        this.renderer.updatePoint(this.index, this.pos.x, this.pos.y);
+        this.renderer.addPoint(this.pos.x, this.pos.y);
 
     }
 
@@ -68,6 +68,8 @@ export default class PointTest {
     }
 
     update () {
+
+        this.renderer.reset();
 
         for (let i = 0; i < 1000; i++)
         {
