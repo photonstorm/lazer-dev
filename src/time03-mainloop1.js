@@ -42,6 +42,7 @@ export default class MainLoopTest {
     update (delta) {
 
         this.px = this.x1;
+
         this.x1 += (this.vx1 * this.loop.physicsStep);
 
         this.x2 += (this.vx2 * this.loop.physicsStep);
