@@ -59,17 +59,36 @@
 
     <ul>
     <?php
-        $projects = scandir('.');
+        function scanFolder ($dir) {
 
-        $ignore = array('.', '..', '.git', 'node_modules', 'assets', 'dist');
-
-        foreach ($projects as $key => $value) {
-
-            if (!in_array($value, $ignore) && substr($value, -2) === 'js')
+            if ($dir !== '.')
             {
-                echo "<li><a href=\"index.php?f=$value\">$value</a></li>";
+                echo "<h2>$dir</h2>";
             }
+
+            $projects = scandir($dir);
+
+            $ignore = array('.', '..', '.git', 'node_modules', 'assets', 'dist', 'lib');
+
+            foreach ($projects as $key => $value) {
+
+                if (!in_array($value, $ignore))
+                {
+                    if (is_dir($value))
+                    {
+                        scanFolder($value);
+                    }
+                    else if (substr($value, -2) === 'js')
+                    {
+                        echo "<li><a href=\"index.php?f=$dir/$value\">$value</a></li>";
+                    }
+                }
+            }
+
         }
+
+        scanFolder('.');
+
     ?>
     </ul>
 
