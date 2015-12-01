@@ -1,10 +1,10 @@
 import Canvas from 'canvas/Canvas.js';
 import AddToDOM from 'dom/AddToDOM.js';
 import BackgroundColor from 'canvas/BackgroundColor.js';
-import Line from 'canvas/graphics/Line.js';
+import Line from 'canvas/graphics/LineStyle.js';
 import Fill from 'canvas/graphics/Fill.js';
 import Stroke from 'canvas/graphics/Stroke.js';
-import Rectangle from 'canvas/shapes/Rectangle.js';
+import Rectangle from 'canvas/graphics/Rectangle.js';
 
 export default class CanvasGraphics {
 

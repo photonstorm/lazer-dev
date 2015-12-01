@@ -4,7 +4,7 @@ import BackgroundColor from 'canvas/BackgroundColor.js';
 import Line from 'canvas/graphics/LineStyle.js';
 import Fill from 'canvas/graphics/Fill.js';
 import Stroke from 'canvas/graphics/Stroke.js';
-import Rectangle from 'canvas/graphics/Rectangle.js';
+import Circle from 'canvas/graphics/Circle.js';
 
 export default class CanvasGraphics {
 
@@ -22,20 +22,13 @@ export default class CanvasGraphics {
 
         Line(this.ctx, 4);
 
-// export default function Rectangle (context, x, y, width = 128, height = 128, angle = 0, fromCenter = false) {
-
-        this.ctx.save();
-
-        //  Calling Rectangle will transform the context and NOT reset it, as it's a pure Shape function.
+        //  Calling Circle will transform the context and NOT reset it, as it's a pure Shape function.
         //  Use the Shape object to encapsulate transforms.
 
-        Rectangle(this.ctx, 32, 32);
+        // export default function Circle (context, x, y, radius = 128, angle = 0, fromCenter = false) {
 
-        Stroke(this.ctx, 255, 0, 255);
+        Circle(this.ctx, 256, 256);
 
-        this.ctx.restore();
-
-        Rectangle(this.ctx, 256, 32);
         Stroke(this.ctx, 255, 0, 255);
 
     }

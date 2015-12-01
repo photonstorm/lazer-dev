@@ -34,7 +34,7 @@ export default class CanvasGraphics {
 
         ctx.beginPath();
 
-        Line(ctx, 1, 'butt', 'miter', [5, 5]); // miter = crisp pixels at 1px line width stroke (+ see below)
+        Line(ctx, 1, 'butt', 'miter', [5, 5, 10, 5]); // miter = crisp pixels at 1px line width stroke (+ see below)
         //  With a lineWidth of 1 (or any odd number) we need to -0.5 this to retain pixel clarity:
         Rectangle(ctx, 32-0.5, 32-0.5);
         Stroke(ctx, 255, 255, 0);
