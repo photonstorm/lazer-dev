@@ -6,7 +6,7 @@ import Line from 'canvas/graphics/LineStyle.js';
 import FillGradient from 'canvas/graphics/FillGradient.js';
 import Stroke from 'canvas/graphics/Stroke.js';
 import Rectangle from 'canvas/graphics/Rectangle.js';
-import LinearGradient from 'canvas/graphics/LinearGradient.js';
+import LinearGradient, { addColor } from 'canvas/graphics/LinearGradient.js';
 
 export default class CanvasGraphics {
 
@@ -22,9 +22,9 @@ export default class CanvasGraphics {
 
         //  method 1
         // let p = LinearGradient(this.ctx, 0, 0, 256, 256);
-        // p.addColorStop(0, '#ff0000');
-        // p.addColorStop(0.5, '#ffff00');
-        // p.addColorStop(1, '#00ff00');
+        // addColor(p, 0, '#ff0000');
+        // addColor(p, 0.5, '#ffff00');
+        // addColor(p, 1, '#00ff00');
 
         //  method 2
         // let p = LinearGradient(this.ctx, 0, 0, 256, 256, 0, '#ff0000', 0.5, '#00ff00', 1, '#0000ff');
