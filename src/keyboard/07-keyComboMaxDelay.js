@@ -19,10 +19,10 @@ function checkCombo (event, combo) {
 //  39 = RIGHT
 //  40 = DOWN
 
-let combo = KeyCombo([ 38, 38, 38, 40, 40, 40, 37, 37, 37, 39, 39, 39 ]);
+let combo = KeyCombo([ 38, 38, 38, 40, 40, 40, 37, 37, 37, 39, 39, 39 ], { maxKeyDelay: 1000 });
 
 //  They get 1 second to press the next key in the combo or it resets
-combo.maxKeyDelay = 1000;
+// combo.maxKeyDelay = 1000;
 
 console.log(combo);
 
