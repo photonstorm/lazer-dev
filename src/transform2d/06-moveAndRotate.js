@@ -50,7 +50,7 @@ export default class TransformTest {
 
     update (delta) {
 
-        this.sprite1.angle += 2;
+        this.sprite1.rotation += 0.05;
 
         this.sprite1.x += 100 * this.loop.physicsStep;
 

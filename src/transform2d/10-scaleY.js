@@ -58,7 +58,7 @@ export default class TransformTest {
 
         if (this.sprite1.scaleY >= 10)
         {
-            this.sprite1.scale(1);
+            this.sprite1.scaleY = 1;
         }
 
     }

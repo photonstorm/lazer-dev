@@ -54,19 +54,14 @@ export default class TransformTest {
 
         if (this.sprite1.scaleX >= 10)
         {
-            this.sprite1.scale(1);
+            this.sprite1.scaleX = 1;
         }
 
     }
 
     draw (i) {
 
-        // DrawImage(this.ctx, this.image, { x: this.sprite1.x, y: this.sprite1.y, rotate: this.sprite1.rotation });
         DrawImage(this.ctx, this.image, { x: this.sprite1.x, y: this.sprite1.y, rotate: this.sprite1.rotation, scaleX: this.sprite1.scaleX, scaleY: this.sprite1.scaleY, anchorX: 0.5, anchorY: 0.5 });
-
-        //  interpolated
-        // let tx = (this.px + (this.x1 - this.px) * i);
-        // this.ctx.fillRect(tx, 200, 128, 128);
 
     }
 

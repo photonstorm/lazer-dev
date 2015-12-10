@@ -50,18 +50,13 @@ export default class TransformTest {
 
     update (delta) {
 
-        this.sprite1.angle++;
+        this.sprite1.rotation += 0.01;
 
     }
 
     draw (i) {
 
-        // DrawImage(this.ctx, this.image, { x: this.sprite1.x, y: this.sprite1.y, rotate: this.sprite1.rotation });
         DrawImage(this.ctx, this.image, { x: this.sprite1.x, y: this.sprite1.y, rotate: this.sprite1.rotation, anchorX: 0.5, anchorY: 0.5 });
-
-        //  interpolated
-        // let tx = (this.px + (this.x1 - this.px) * i);
-        // this.ctx.fillRect(tx, 200, 128, 128);
 
     }
 
