@@ -1,5 +1,9 @@
 import MainLoop from 'system/MainLoop.js';
+import Between from 'math/Between.js';
 import Canvas from 'canvas/Canvas.js';
+import GetContext from 'canvas/GetContext.js';
+import Clear from 'canvas/graphics/Clear.js';
+import ResetTransform from 'canvas/ResetTransform.js';
 import AddToDOM from 'dom/AddToDOM.js';
 import BackgroundColor from 'canvas/BackgroundColor.js';
 import Rectangle from 'canvas/shapes/Rectangle.js';
@@ -10,13 +14,13 @@ export default class CanvasGraphics {
 
         this.canvas = Canvas(800, 600);
 
-        BackgroundColor(this.canvas, 'rgb(0, 0, 50)');
-
         AddToDOM(this.canvas, 'game');
 
-        this.ctx = this.canvas.getContext('2d');
+        this.ctx = GetContext(this.canvas);
 
-        this.rect = new Rectangle({ x: 400, y: 300, width: 128, height: 128, stroke: 'rgba(255,0,255,1)', anchor: 0.5 });
+        this.rect = new Rectangle({ x: 0, y: 300, width: 128, height: 128, fill: 'rgba(255,0,255,1)', anchor: 0.5 });
+
+        console.log(this.rect.transform.e, this.rect.transform.f);
 
         this.loop = new MainLoop(60);
 
@@ -26,17 +30,30 @@ export default class CanvasGraphics {
 
         this.loop.start();
 
+        this.bx = 0;
+
+        console.log(this.canvas);
+
     }
 
     begin () {
 
-        this.ctx.clearRect(0, 0, 800, 600);
+        ResetTransform(this.ctx);
+
+        Clear(this.ctx, true, 0, 0, 50, 1);
+
+        this.ctx.fillStyle = 'rgb(255,0,0)';
+        this.ctx.fillRect(this.bx, 200, 32, 32);
+        this.bx++;
+
+        this.rect.x++;
+
 
     }
 
     update (delta) {
 
-        this.rect.angle++;
+        // this.rect.angle++;
 
     }
 
