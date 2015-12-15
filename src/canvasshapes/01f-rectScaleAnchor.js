@@ -18,7 +18,9 @@ export default class CanvasGraphics {
 
         this.ctx = GetContext(this.canvas);
 
-        this.rect = new Rectangle({ x: 0, y: 0, width: 64, height: 64, fill: 'rgba(255,0,255,1)', anchor: 0.5 });
+        this.rect1 = new Rectangle({ x: 400, y: 300, width: 128, height: 128, fill: 'rgba(255,0,255,0.8)', anchor: 0.5 });
+
+        this.d = 1;
 
         this.loop = new MainLoop(60);
 
@@ -36,20 +38,38 @@ export default class CanvasGraphics {
 
         Clear(this.ctx, true, 0, 0, 50, 1);
 
-        this.rect.x++;
-
-
     }
 
     update (delta) {
 
-        // this.rect.angle++;
+        this.rect1.rotation += 0.05;
+
+        if (this.d)
+        {
+            this.rect1.scaleX += 0.01;
+            this.rect1.scaleY += 0.01;
+
+            if (this.rect1.scaleX >= 4)
+            {
+                this.d = 0;
+            }
+        }
+        else
+        {
+            this.rect1.scaleX -= 0.01;
+            this.rect1.scaleY -= 0.01;
+
+            if (this.rect1.scaleX <= 0.5)
+            {
+                this.d = 1;
+            }
+        }
 
     }
 
     draw (i) {
 
-        this.rect.draw(this.ctx, i);
+        this.rect1.draw(this.ctx, i);
 
     }
 
