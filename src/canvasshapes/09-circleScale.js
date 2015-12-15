@@ -17,7 +17,7 @@ export default class CanvasGraphics {
 
         this.ctx = GetContext(this.canvas);
 
-        this.circ = new Circle({ x: 400, y: 300, radius: 128, fill: 'rgba(255, 0, 255, 1)', stroke: 'rgba(0, 0, 0, 1)', lineWidth: 8 });
+        this.circ = new Circle({ x: 400, y: 300, radius: 128, fill: 'rgba(255, 0, 255, 1)', stroke: 'rgba(0, 0, 0, 1)', lineWidth: 8, scaleX: 2, scaleY: 0.5 });
 
         this.loop = new MainLoop(60);
 
@@ -35,11 +35,11 @@ export default class CanvasGraphics {
 
         Clear(this.ctx, true, 200, 200, 255, 1);
 
-        // this.circ.x++;
-
     }
 
     update (delta) {
+
+        this.circ.rotation += 0.01;
 
     }
 

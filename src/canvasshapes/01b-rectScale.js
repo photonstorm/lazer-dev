@@ -40,7 +40,6 @@ export default class CanvasGraphics {
         this.rect1.x++;
         this.rect2.x++;
 
-
     }
 
     update (delta) {

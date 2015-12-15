@@ -18,7 +18,7 @@ export default class CanvasGraphics {
 
         this.ctx = GetContext(this.canvas);
 
-        this.rect = new Rectangle({ x: 0, y: 0, width: 64, height: 64, fill: 'rgba(255,0,255,1)', anchor: 0.5 });
+        this.rect = new Rectangle({ x: 0, y: 100, width: 64, height: 64, fill: 'rgba(255,0,255,1)', anchor: 0.5 });
 
         this.loop = new MainLoop(60);
 
@@ -43,7 +43,7 @@ export default class CanvasGraphics {
 
     update (delta) {
 
-        // this.rect.angle++;
+        this.rect.angle += 1.5;
 
     }
 
