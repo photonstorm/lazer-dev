@@ -19,21 +19,10 @@ export default class CanvasGraphics {
 
         this.ctx = GetContext(this.canvas);
 
-        this.rect = Rectangle({ x: 0, y: 100, width: 64, height: 64, fill: 'rgba(255,0,255,1)', anchor: 0.5 });
+        this.rect = Rectangle({ x: 0, y: 0, width: 64, height: 64, fill: 'rgba(255,0,255,1)', anchor: 0.5 });
 
-        let t = Transform(100, 100);
-
-        this.rect.transform = t;
-
-        console.log(t);
-
-        // Object.defineProperty(this.rect, 'transform', t);
-
-        console.log(this.rect);
-
-        this.rect.transform.x = 100;
-        this.rect.transform.y = 100;
-
+        //  Needs to inherit the x/y etc from above
+        this.rect.transform = Transform(100, 100);
 
         this.loop = new MainLoop(60);
 
@@ -51,7 +40,7 @@ export default class CanvasGraphics {
 
         Clear(this.ctx, true, 0, 0, 50, 1);
 
-        // this.rect.x++;
+        this.rect.transform.x++;
 
 
     }
