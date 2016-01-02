@@ -1,8 +1,6 @@
-import { PALETTE_ARNE } from 'create/palettes/Arne16.js';
 import RenderToCanvas from 'create/RenderToCanvas.js';
 import Canvas from 'canvas/Canvas.js';
 import AddToDOM from 'dom/AddToDOM.js';
-import BackgroundColor from 'canvas/BackgroundColor.js';
 
 export default class CanvasGraphics {
 
@@ -25,7 +23,7 @@ export default class CanvasGraphics {
             '.4........4.'
         ];
 
-        let canvas = RenderToCanvas(data, null, PALETTE_ARNE, 16, 16);
+        let canvas = RenderToCanvas(data);
 
         AddToDOM(canvas, 'game');
 

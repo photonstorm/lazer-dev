@@ -8,6 +8,8 @@ export default class CanvasGraphics {
 
     constructor () {
 
+        //  Render the sprite data to an existing canvas and DON'T resize it
+
         this.canvas = Canvas(800, 300);
 
         BackgroundColor(this.canvas, 'rgb(0, 0, 20)');
@@ -22,7 +24,7 @@ export default class CanvasGraphics {
             ' 3 3 '
         ];
 
-        RenderToCanvas(data, this.canvas, PALETTE_ARNE);
+        RenderToCanvas(data, { canvas: this.canvas, palette: PALETTE_ARNE, resizeCanvas: false });
 
     }
 
