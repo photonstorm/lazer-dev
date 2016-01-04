@@ -1,9 +1,14 @@
-import Transform from 'math/transform/2d/Transform2DMinimal.js';
+import Transform from 'math/transform/2d/Transform2D.js';
 
-let t1 = Transform(100, 200, 0.32);
+let bob = {
+    name: 'Bob',
+    transform: new Transform()
+};
 
-console.log(t1, t1.x);
+bob.transform.addProperties(bob);
 
-t1.x = 345;
+bob.x = 123;
+bob.scale.x = 2;
+bob.scale.y = 2;
 
-console.log(t1, t1.x);
+console.log(bob);
