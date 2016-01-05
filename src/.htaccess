@@ -1,0 +1,1 @@
+php_value open_basedir /home/sites/examples.lazerjs.io/public;D:\wamp\www\lazer-dev\src\;D:\wamp\www\lazer-dev\;D:\wamp\www\lazer-dev\src\wip

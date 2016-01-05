@@ -42,15 +42,19 @@ class TransformTest {
     constructor () {
 
         //  Throw some CSS into our game container
-        let g = document.getElementById('game').style;
-        g.width = '800px';
-        g.height = '600px';
-        g.backgroundColor = '#2d2d2d';
-        g.overflow = 'hidden';
-        g.position = 'absolute';
+        let game = document.getElementById('game').style;
 
-        let ul = document.getElementById('demos').style;
-        ul.marginTop = '600px';
+        game.backgroundColor = '#2d2d2d';
+        game.width = '800px';
+        game.height = '600px';
+        game.overflow = 'hidden';
+        game.position = 'absolute';
+
+        if (document.getElementById('options'))
+        {
+            let options = document.getElementById('options').style;
+            options.marginTop = '620px';
+        }
 
         this.image = null;
         this.loader = new Loader();
