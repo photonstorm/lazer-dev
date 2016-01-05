@@ -20,7 +20,7 @@
         $title = $filename;
     }
 
-    $ignore = array('_site', 'assets', 'lib');
+    $ignore = array('.', '..', 'src', '_site', 'assets', 'lib');
 
     $path = realpath(dirname(__FILE__));
 
