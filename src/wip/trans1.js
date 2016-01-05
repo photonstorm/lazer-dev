@@ -1,4 +1,4 @@
-import Transform from 'math/transform/2d/Transform2D.js';
+import Transform from 'math/transform/2d/Transform.js';
 
 let bob = {
     name: 'Bob',

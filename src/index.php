@@ -34,6 +34,8 @@
 
     <div id="game"></div>
 
+    <br clear="all" />
+
     <?php
         if ($file !== '')
         {
@@ -57,7 +59,7 @@
         }
     ?>
 
-    <ul>
+    <ul id="demos">
     <?php
         function scanFolder ($dir) {
 
