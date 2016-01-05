@@ -11,7 +11,9 @@ class Sprite extends BaseTransform {
 
         super(x, y);
 
-        this.speed = Between(1, 4);
+        this.speed = Between(1, 5);
+        this.rotateSpeed = 0.02 * this.speed;
+
         this.texture = { image: image, width: image.width, height: image.height };
 
         this.element = document.createElement('div');
@@ -27,9 +29,9 @@ class Sprite extends BaseTransform {
 
     }
 
-    render () {
+    render (i) {
 
-        SetTransformToCSS(this.transform, this.element);
+        SetTransformToCSS(this.transform, this.element, i);
 
     }
 
@@ -91,13 +93,13 @@ class TransformTest {
 
         for (let sprite of this.sprites)
         {
-            sprite.rotation += 0.05;
+            sprite.rotation += sprite.rotateSpeed;
 
             sprite.x += sprite.speed;
 
             if (sprite.x > 864)
             {
-                sprite.x = -64;
+                sprite.position.resetX(-64);
             }
         }
 
@@ -107,7 +109,7 @@ class TransformTest {
 
         for (let sprite of this.sprites)
         {
-            sprite.render();
+            sprite.render(i);
         }
 
     }

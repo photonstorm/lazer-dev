@@ -1,4 +1,4 @@
-import BaseTransform from 'math/transform/2d/basic/BaseTransform.js';
+import BaseTransform from 'math/transform/2d/standard/BaseTransform.js';
 import SetTransformToContext from 'math/transform/2d/SetTransformToContext.js';
 import MainLoop from 'system/MainLoop.js';
 import Canvas from 'canvas/Canvas.js';
@@ -15,14 +15,7 @@ class Sprite extends BaseTransform {
 
         super(x, y);
 
-        this.speed = Between(1, 5);
-        this.rotateSpeed = 0.02 * this.speed;
-
         this.texture = { image: image, width: image.width, height: image.height };
-
-        this.rotationAnchor.set(0.5);
-
-        this.transform.enableInterpolation();
 
     }
 
@@ -52,7 +45,7 @@ class TransformTest {
         this.image = null;
         this.loader = new Loader();
         this.loader.path = 'assets/';
-        this.loader.image('mushroom2').then((file) => this.loadComplete(file));
+        this.loader.image('arrow').then((file) => this.loadComplete(file));
         this.loader.start();
 
     }
@@ -61,15 +54,19 @@ class TransformTest {
 
         this.image = file.data;
 
-        this.sprites = new Set();
+        this.arrow1 = new Sprite(this.image, 200, 150);
+        this.arrow1.pivot.x = 100;
 
-        for (let i = 0; i < 100; i++)
-        {
-            let x = Between(0, 800);
-            let y = Between(0, 600);
-            let mushroom = new Sprite(this.image, x, y);
-            this.sprites.add(mushroom);
-        }
+        this.arrow2 = new Sprite(this.image, 600, 150);
+        this.arrow2.pivot.y = 100;
+
+        this.arrow3 = new Sprite(this.image, 200, 450);
+        this.arrow3.pivot.x = 100;
+        this.arrow3.pivot.y = 100;
+
+        this.arrow4 = new Sprite(this.image, 600, 450);
+        this.arrow4.pivot.x = 100;
+        this.arrow4.rotationAnchor.set(0.5);
 
         this.loop = new MainLoop(60);
 
@@ -85,32 +82,34 @@ class TransformTest {
 
         ResetTransform(this.ctx);
 
-        CLS(this.ctx, true, 50, 50, 100);
+        CLS(this.ctx, true, 62, 95, 150);
 
     }
 
     update (delta) {
 
-        for (let sprite of this.sprites)
-        {
-            sprite.rotation += sprite.rotateSpeed;
-
-            sprite.x += sprite.speed;
-
-            if (sprite.x > 864)
-            {
-                sprite.position.resetX(-64);
-            }
-        }
+        this.arrow1.rotation += 0.05;
+        this.arrow2.rotation += 0.05;
+        this.arrow3.rotation += 0.05;
+        this.arrow4.rotation += 0.05;
 
     }
 
     draw (i) {
 
-        for (let sprite of this.sprites)
-        {
-            sprite.render(this.ctx, i);
-        }
+        //  Render the pivot points
+        this.ctx.fillStyle = 'rgb(255,255,0)';
+
+        this.ctx.fillRect(this.arrow1.x, this.arrow1.y, 4, 4);
+        this.ctx.fillRect(this.arrow2.x, this.arrow2.y, 4, 4);
+        this.ctx.fillRect(this.arrow3.x, this.arrow3.y, 4, 4);
+        this.ctx.fillRect(this.arrow4.x, this.arrow4.y, 4, 4);
+
+        //  Render the arrows
+        this.arrow1.render(this.ctx, i);
+        this.arrow2.render(this.ctx, i);
+        this.arrow3.render(this.ctx, i);
+        this.arrow4.render(this.ctx, i);
 
     }
 

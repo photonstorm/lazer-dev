@@ -20,10 +20,6 @@ class Sprite extends BaseTransform {
 
         this.texture = { image: image, width: image.width, height: image.height };
 
-        this.rotationAnchor.set(0.5);
-
-        this.transform.enableInterpolation();
-
     }
 
     render (ctx, i) {
@@ -61,14 +57,16 @@ class TransformTest {
 
         this.image = file.data;
 
-        this.sprites = new Set();
+        //  Chrome cannot optimize a Set or Map yet, so use a traditional Array for hot code
+        this.sprites = [];
 
         for (let i = 0; i < 100; i++)
         {
             let x = Between(0, 800);
             let y = Between(0, 600);
             let mushroom = new Sprite(this.image, x, y);
-            this.sprites.add(mushroom);
+            mushroom.rotationAnchor.set(0.5);
+            this.sprites.push(mushroom);
         }
 
         this.loop = new MainLoop(60);
@@ -91,8 +89,10 @@ class TransformTest {
 
     update (delta) {
 
-        for (let sprite of this.sprites)
+        for (var c = 0; c < this.sprites.length; c++)
         {
+            var sprite = this.sprites[c];
+
             sprite.rotation += sprite.rotateSpeed;
 
             sprite.x += sprite.speed;
@@ -107,9 +107,9 @@ class TransformTest {
 
     draw (i) {
 
-        for (let sprite of this.sprites)
+        for (let c = 0; c < this.sprites.length; c++)
         {
-            sprite.render(this.ctx, i);
+            this.sprites[c].render(this.ctx, i);
         }
 
     }
