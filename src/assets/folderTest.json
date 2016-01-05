@@ -1,0 +1,30 @@
+{"frames": [
+
+{
+	"filename": "test1/arrow",
+	"frame": {"x":2,"y":68,"w":62,"h":46},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":46},
+	"sourceSize": {"w":62,"h":46},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "test2/arrow",
+	"frame": {"x":2,"y":2,"w":64,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
+	"sourceSize": {"w":64,"h":64},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "folderTest.png",
+	"format": "RGBA8888",
+	"size": {"w":68,"h":116},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:9c7e2a85df2fef4933de5904aee82176:7af14f5409482dda271899682e2eba91:d3ffc1fe0aa5ce4f3af0edfa64ac44ae$"
+}
+}
