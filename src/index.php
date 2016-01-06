@@ -220,7 +220,7 @@
                         if ($category !== 'wip')
                         {
                             //  Remove the 01- part of the filename (used for ordering, not needed for display)
-                            $item = substr($item, 3);
+                            $item = substr($item, strpos($item, '-') + 1);
                         }
 
                         if ($fcheck === $filename)
