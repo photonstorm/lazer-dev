@@ -5,9 +5,8 @@ let loader = new BaseLoader();
 
 loader.path = 'assets/';
 
-let testFile = JSONFile('test', 'folderTest.json');
-
-loader.addFile(testFile);
+loader.addFile(JSONFile('folder', 'folderTest.json'));
+loader.addFile(JSONFile('megaset', 'megasetHD-0.json'));
 
 loader.start().then(
     (files) => loadComplete(files)

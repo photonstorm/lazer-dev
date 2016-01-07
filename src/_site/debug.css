@@ -64,6 +64,12 @@ a {
     background-color: #8d8d8d;
 }
 
+@media screen and (max-width: 1024px) {
+    #options {
+        display: none !important;
+    }
+}
+
 #options {
     float: left;
     margin: 0px 0px 0px 32px;

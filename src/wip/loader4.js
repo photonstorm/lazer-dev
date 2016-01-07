@@ -7,6 +7,15 @@ loader.path = 'assets/';
 
 let testFile = JSONFile('test', 'folderTest.json');
 
+//  Let's use a process callback to modify the json slightly
+
+//  The callback is invoked AFTER the JSONFile Process handler has run, 
+//  allowing for further modification of the data
+
+testFile.processCallback = function (file) {
+    file.data.meta.app = 'LazerPacker';
+};
+
 loader.addFile(testFile);
 
 loader.start().then(
@@ -14,8 +23,6 @@ loader.start().then(
 );
 
 function loadComplete (files) {
-
-    console.log('Loader finished');
 
     console.log(files);
 

@@ -1,16 +1,9 @@
-import { FILE, LOADER } from 'loader/Constants.js';
+import File, * as FILE from 'loader/File.js';
 
-console.log(LOADER.COMPLETE, FILE.LOADING);
+console.log(File);
+console.log(FILE.COMPLETE);
 
-let bob = {
-    x: 1,
-    y: 4,
-    onProcess: function () { console.log('test'); }
-};
+let bob = File('test', 'test');
 
-console.log(bob.x);
+console.log(bob);
 
-if (bob.onProcess)
-{
-    console.log('bob has onProcess');
-}
