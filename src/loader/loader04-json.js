@@ -6,5 +6,15 @@ loader.path = 'assets/';
 
 loader.json('invaderpig');
 
-loader.start();
+loader.start().then(
+    (files) => loaderComplete(files)
+);
 
+function loaderComplete (files) {
+
+    for (let file of files)
+    {
+        console.log(file);
+    }
+
+}

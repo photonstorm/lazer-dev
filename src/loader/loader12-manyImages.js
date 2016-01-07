@@ -4,7 +4,9 @@ let loader = new Loader();
 
 loader.path = 'assets/';
 
-loader.atlas('invaderpig');
+loader.image('logo', 'phaser1.png');
+loader.image('arrow'); // automatic png addition
+loader.images( [ 'jelly', 'octopus', 'loop' ] );
 
 loader.start().then(
     (files) => loaderComplete(files)
@@ -14,7 +16,7 @@ function loaderComplete (files) {
 
     for (let file of files)
     {
-        console.log(file);
+        document.getElementById('game').appendChild(file.data);
     }
 
 }

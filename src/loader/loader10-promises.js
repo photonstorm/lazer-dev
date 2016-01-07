@@ -8,17 +8,26 @@ export default class LoaderTest {
 
         this.loader.path = 'assets/';
 
-        this.loader.image('phaser1');
-        this.loader.image('mushroom2').then(this.fileLoaded);
-        this.loader.image('loop');
+        this.loader.image('phaser1').then(file => this.fileLoaded(file));
+        this.loader.image('mushroom2').then(file => this.fileLoaded(file));
+        this.loader.image('loop').then(file => this.fileLoaded(file));
 
-        this.loader.start();
+        this.loader.start().then(files => this.loaderComplete(files));
 
     }
 
     fileLoaded (file) {
 
-        console.log('The Mushroom loaded!');
+        console.log(file.key, 'loaded');
+
+    }
+
+    loaderComplete (files) {
+
+        for (let file of files)
+        {
+            console.log(file);
+        }
 
     }
 

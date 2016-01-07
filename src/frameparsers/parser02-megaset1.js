@@ -5,7 +5,7 @@ let loader = new Loader();
 
 loader.path = 'assets/';
 
-loader.atlas('invaderpig').then(
+loader.atlas('megasetHD-0').then(
     (multipart) => atlasLoaded(multipart)
 );
 
