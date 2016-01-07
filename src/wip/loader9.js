@@ -1,14 +1,11 @@
 import BaseLoader from 'loader/BaseLoader.js';
-import JSONFile from 'loader/types/JSONFile.js';
+import AtlasJSONFile from 'loader/types/AtlasJSONFile.js';
 
 let loader = new BaseLoader();
 
 loader.path = 'assets/';
 
-let testFile = JSONFile('test', 'folderTest.json');
-
-loader.xhr.timeout = 1000;
-testFile.xhr.timeout = 4000;
+let testFile = AtlasJSONFile('test', 'folderTest.png', 'folderTest.json');
 
 loader.addFile(testFile);
 

@@ -7,6 +7,7 @@ loader.path = 'assets/';
 
 let testFile = JSONFile('test', 'folderTest.json');
 
+//  Loader XHR settings are global, but File based ones override them
 loader.xhr.timeout = 1000;
 testFile.xhr.timeout = 4000;
 
