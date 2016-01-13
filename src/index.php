@@ -217,7 +217,7 @@
                         $url = "index.php?s=$current&amp;f=$current/$item";
                         $item = substr($item, 0, -3);
 
-                        if ($current !== 'wip')
+                        if ($current !== 'wip' && strpos($item, '-') > 0)
                         {
                             //  Remove the 01- part of the filename (used for ordering, not needed for display)
                             $item = substr($item, strpos($item, '-') + 1);
