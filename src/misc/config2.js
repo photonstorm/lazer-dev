@@ -1,7 +1,7 @@
 import Config from 'config/Config.js';
-import Dimensions from 'config/Dimensions.js';
-import Transparent from 'config/Transparent.js';
-import GameTitle from 'config/GameTitle.js';
+import Dimensions from 'config/settings/Dimensions.js';
+import Transparent from 'config/settings/Transparent.js';
+import GameTitle from 'config/settings/GameTitle.js';
 import Banner from 'utils/Banner.js';
 
 let config = Config(

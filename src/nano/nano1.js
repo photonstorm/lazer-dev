@@ -1,6 +1,6 @@
 import Config from 'config/Config.js';
-import Parent from 'config/Parent.js';
-import GameTitle from 'config/GameTitle.js';
+import Parent from 'config/settings/Parent.js';
+import GameTitle from 'config/settings/GameTitle.js';
 import Game from 'game/nano/Game.js';
 
 let config = Config(

@@ -1,13 +1,15 @@
 import Config from 'config/Config.js';
-import Dimensions from 'config/Dimensions.js';
-import Transparent from 'config/Transparent.js';
-import Parent from 'config/Parent.js';
-import GameTitle from 'config/GameTitle.js';
+import Dimensions from 'config/settings/Dimensions.js';
+import Transparent from 'config/settings/Transparent.js';
+import Parent from 'config/settings/Parent.js';
+import GameTitle from 'config/settings/GameTitle.js';
+import DisableWebAudio from 'config/settings/DisableWebAudio.js';
 import Banner from 'utils/Banner.js';
 
 let config = Config(
     Transparent(false),
-    GameTitle('Arkanoid')
+    GameTitle('Arkanoid'),
+    DisableWebAudio(true)
 );
 
 //  Our Game requires the Dimensions, Parent and Transparent config objects.
