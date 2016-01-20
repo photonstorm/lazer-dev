@@ -18,4 +18,10 @@ function loaderComplete (files) {
 
     console.log(cache.get('logo'));
 
+    // game.add.sprite(100, 200, 'level1:background,level2:background,level3:background');
+    // game.add.sprite(100, 200, 'level1|background');
+    // game.add.sprite(100, 200, 'level1/background');
+    // game.add.sprite(100, 200, 'level1>background');
+
+
 }
