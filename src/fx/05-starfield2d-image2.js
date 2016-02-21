@@ -24,7 +24,7 @@ export default class FX {
         this.image = null;
         this.loader = new Loader();
         this.loader.path = 'assets/';
-        this.loader.image('star3').then((file) => this.loadComplete(file));
+        this.loader.image('blue_ball').then((file) => this.loadComplete(file));
         this.loader.start();
 
     }
@@ -35,9 +35,14 @@ export default class FX {
 
         this.starfield = new Starfield2D(800, 600, { paddingX: 64, paddingY: 64 });
 
-        this.starfield.addWaveLayer(200, 0, 0, { sinX: 0.4, sinAmpX: 2, cosY: 0.4, cosAmpY: 2 });
-        this.starfield.addWaveLayer(200, 0, 0, { sinX: 0.4, sinAmpX: 3, cosY: 0.4, cosAmpY: 3 });
-        this.starfield.addWaveLayer(200, 0, 0, { sinX: 0.4, sinAmpX: 4, cosY: 0.4, cosAmpY: 4 });
+        this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 6 });
+        this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 7 });
+        this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 8 });
+        this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 9 });
+        this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 10 });
+        this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 11 });
+        this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 12 });
+        this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 13 });
 
         this.loop = new MainLoop(60);
 

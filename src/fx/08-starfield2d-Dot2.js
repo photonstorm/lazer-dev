@@ -4,7 +4,7 @@ import Clear from 'canvas/graphics/Clear.js';
 import AddToDOM from 'dom/AddToDOM.js';
 import BackgroundColor from 'canvas/BackgroundColor.js';
 import MainLoop from 'system/MainLoop.js';
-import Starfield2D from 'fx/starfield/2d/Starfield2D.js';
+import Starfield2DDot from 'fx/starfield/2d/Starfield2DDot.js';
 
 export default class FX {
 
@@ -18,11 +18,14 @@ export default class FX {
 
         this.ctx = GetContext(this.canvas);
 
-        this.starfield = new Starfield2D(800, 600);
+        this.starfield = new Starfield2DDot(800, 600);
 
-        this.starfield.addWaveLayer(200, 0, 0, { sinX: 0.04, sinAmpX: 2, cosY: 0.04, cosAmpY: 2 });
-        this.starfield.addWaveLayer(200, 0, 0, { sinX: 0.04, sinAmpX: 3, cosY: 0.04, cosAmpY: 3 });
-        this.starfield.addWaveLayer(200, 0, 0, { sinX: 0.04, sinAmpX: 4, cosY: 0.04, cosAmpY: 4 });
+        this.starfield.starWidth = 2;
+        this.starfield.starHeight = 6;
+
+        this.starfield.addLayer(200, 0, -2, '#108A84');
+        this.starfield.addLayer(200, 0, -3, '#19C3BA');
+        this.starfield.addLayer(200, 0, -4, '#22F7EC');
 
         this.loop = new MainLoop(60);
 
@@ -48,26 +51,7 @@ export default class FX {
 
     draw (i) {
 
-        this.starfield.render(i, (layer, x, y) => this.drawStar(layer, x, y));
-
-    }
-
-    drawStar (layer, x, y) {
-        
-        if (layer === 0)
-        {
-            this.ctx.fillStyle = '#666';
-        }
-        else if (layer === 1)
-        {
-            this.ctx.fillStyle = '#aaa';
-        }
-        else if (layer === 2)
-        {
-            this.ctx.fillStyle = '#fff';
-        }
-
-        this.ctx.fillRect(x, y, 2, 2);
+        this.starfield.render(i, this.ctx);
 
     }
 
