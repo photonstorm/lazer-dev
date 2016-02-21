@@ -20,12 +20,9 @@ export default class FX {
 
         this.starfield = new Starfield2DDot(800, 600);
 
-        this.starfield.starWidth = 2;
-        this.starfield.starHeight = 6;
-
-        this.starfield.addLayer(200, 0, -2, '#108A84');
-        this.starfield.addLayer(200, 0, -3, '#19C3BA');
-        this.starfield.addLayer(200, 0, -4, '#22F7EC');
+        this.starfield.addLayer(200, { speedY: -2, color: '#108A84', starHeight: 2 });
+        this.starfield.addLayer(200, { speedY: -3, color: '#19C3BA', starHeight: 4 });
+        this.starfield.addLayer(200, { speedY: -4, color: '#22F7EC', starHeight: 6 });
 
         this.loop = new MainLoop(60);
 
