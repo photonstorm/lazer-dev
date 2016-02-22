@@ -20,9 +20,9 @@ export default class FX {
 
         this.starfield = new Starfield2D(800, 600);
 
-        this.starfield.addWaveLayer(200, 0, 0, { sinX: 0.04, sinAmpX: 2, cosY: 0.04, cosAmpY: 2 });
-        this.starfield.addWaveLayer(200, 0, 0, { sinX: 0.04, sinAmpX: 3, cosY: 0.04, cosAmpY: 3 });
-        this.starfield.addWaveLayer(200, 0, 0, { sinX: 0.04, sinAmpX: 4, cosY: 0.04, cosAmpY: 4 });
+        this.starfield.addWaveLayer({ qty: 200, sinX: 0.04, sinAmpX: 2, cosY: 0.04, cosAmpY: 2 });
+        this.starfield.addWaveLayer({ qty: 200, sinX: 0.04, sinAmpX: 3, cosY: 0.04, cosAmpY: 3 });
+        this.starfield.addWaveLayer({ qty: 200, sinX: 0.04, sinAmpX: 4, cosY: 0.04, cosAmpY: 4 });
 
         this.loop = new MainLoop(60);
 

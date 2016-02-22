@@ -22,13 +22,9 @@ export default class FX {
 
         this.starfield = new Starfield2D(800, 600);
 
-        // this.starfield.addLayer(200, -1.9, 0.4);
-        // this.starfield.addLayer(200, -1.7, 0.4);
-        // this.starfield.addLayer(200, -1.5, 0.4);
-
-        this.starfield.addLayer(200, -4, 0);
-        this.starfield.addLayer(200, -3, 0);
-        this.starfield.addLayer(200, -2, 0);
+        this.starfield.addLayer({ qty: 200, speedX: -2 });
+        this.starfield.addLayer({ qty: 200, speedX: -3 });
+        this.starfield.addLayer({ qty: 200, speedX: -4 });
 
         this.loop = new MainLoop(60);
 
@@ -60,7 +56,6 @@ export default class FX {
 
     drawStar (layer, x, y) {
         
-        // this.ctx.fillRect(Math.round(x), Math.round(y), 4, 1);
         this.ctx.fillRect(x, y, 2, 2);
 
     }

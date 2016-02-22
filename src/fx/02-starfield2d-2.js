@@ -22,9 +22,9 @@ export default class FX {
 
         this.starfield = new Starfield2D(800, 600);
 
-        this.starfield.addLayer(200, -2.9, 0);
-        this.starfield.addLayer(200, -2.7, 0);
-        this.starfield.addLayer(200, -2.5, 0);
+        this.starfield.addLayer({ qty: 200, speedX: -2.5 });
+        this.starfield.addLayer({ qty: 200, speedX: -2.7 });
+        this.starfield.addLayer({ qty: 200, speedX: -2.9 });
 
         this.i = 0;
 
@@ -60,7 +60,6 @@ export default class FX {
 
     drawStar (layer, x, y) {
         
-        // this.ctx.fillRect(Math.round(x), Math.round(y), 4, 1);
         this.ctx.fillRect(x, y, 2, 2);
 
     }

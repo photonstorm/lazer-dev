@@ -35,26 +35,7 @@ export default class FX {
 
         this.starfield = new Starfield2D(800, 600, { paddingX: 64, paddingY: 64 });
 
-        this.starfield.addLayer(
-            (x, y, w, h) => this.makeStars(x, y, w, h),
-            0,
-            -2
-        );
-
-        // this.starfield.addWaveLayer(
-        //     (x, y, w, h) => this.makeStars(x, y, w, h),
-        //     0,
-        //     -2,
-        //     { sinX: 0.06, sinAmpX: 6, cosY: 0.04, cosAmpY: 4 }
-        // );
-
-        // this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 7 });
-        // this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 8 });
-        // this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 9 });
-        // this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 10 });
-        // this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 11 });
-        // this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 12 });
-        // this.starfield.addWaveLayer(64, 0, -2, { sinX: 0.06, sinAmpX: 13 });
+        this.starfield.addLayer({ qty: (x, y, w, h) => this.makeStars(x, y, w, h), speedY: -2 });
 
         this.loop = new MainLoop(60);
 
@@ -75,7 +56,7 @@ export default class FX {
 
         for (let c = 0; c < 128; c++)
         {
-            var x = (width / 2) + (Math.sin(i) * 128);
+            var x = (width / 2) + (Math.sin(i) * 64);
             var y = c * 16;
             stars.push( { x, y });
             i++;

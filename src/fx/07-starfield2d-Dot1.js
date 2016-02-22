@@ -20,9 +20,9 @@ export default class FX {
 
         this.starfield = new Starfield2DDot(800, 600);
 
-        this.starfield.addLayer(200, -2, 0, '#888');
-        this.starfield.addLayer(200, -3, 0, '#aaa');
-        this.starfield.addLayer(200, -4, 0, '#fff');
+        this.starfield.addLayer({ qty: 200, speedX: -2, color: '#0000ff'});
+        this.starfield.addLayer({ qty: 200, speedX: -3, color: '#ff0000'});
+        this.starfield.addLayer({ qty: 200, speedX: -4, color: '#00ff00'});
 
         this.loop = new MainLoop(60);
 
