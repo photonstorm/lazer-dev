@@ -38,6 +38,7 @@ export default class FX {
         this.lx = 0;
         this.c1 = 0;
         this.c2 = 255;
+        this.c3 = 0;
         this.i = 0;
         this.di = 0;
 
@@ -96,17 +97,15 @@ export default class FX {
                     this.c2 = h + b;
                     this.c3 = (b + h + a) / 2;
 
-                    if (c2 > 255) { c2 = 255; }
-                    if (c3 > 255) { c3 = 255; }
+                    if (this.c2 > 255) { this.c2 = 255; }
+                    if (this.c3 > 255) { this.c3 = 255; }
 
-                    // ink rgb(c2, c3, i)
-                    this.ctx.fillStyle = 'rgb(' + c2 + ',' + c3 + ',' + this.i + ')';
+                    this.ctx.fillStyle = 'rgb(' + this.c2 + ',' + this.c3 + ',' + this.i + ')';
 
                     let b1 = this.xf + (b * 10);
                     let b3 = this.xf + ((b + 1) * 10);
 
-                     //    box b1,sy,b3,sy2
-                    this.ctx.fillRect(b1, sy, b3, sy2);
+                    this.ctx.fillRect(b1, sy, b3-b1, sy2-sy);
                 }
             }
         }
