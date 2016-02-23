@@ -294,22 +294,22 @@ export default class FX {
 
         this.ctx.fillStyle = '#00ff00';
 
-        this.ctx.fillText('F1 / F2        x1: ' + this.sinusdots.x1, 32, 96);
-        this.ctx.fillText('F3 / F4        y1: ' + this.sinusdots.y1, 32, 128);
+        this.ctx.fillText('F1 / F2        x1: ' + this.sinusdots.x1, 32, 32);
+        this.ctx.fillText('F3 / F4        y1: ' + this.sinusdots.y1, 32, 64);
 
-        this.ctx.fillText('LEFT / RIGHT   x3: ' + this.sinusdots.x3, 32, 32);
-        this.ctx.fillText('UP / DOWN      y3: ' + this.sinusdots.y3, 32, 64);
+        this.ctx.fillText('LEFT / RIGHT   x3: ' + this.sinusdots.x3, 32, 96);
+        this.ctx.fillText('UP / DOWN      y3: ' + this.sinusdots.y3, 32, 128);
 
         this.ctx.fillText('A / D       width: ' + this.sinusdots.width, 32, 512);
         this.ctx.fillText('W / S      height: ' + this.sinusdots.height, 32, 544);
 
         //  Right column
 
-        this.ctx.fillText('F5 / F6                 x2: ' + this.sinusdots.x2, 400, 96);
-        this.ctx.fillText('F7 / F8                 y2: ' + this.sinusdots.y2, 400, 128);
+        this.ctx.fillText('F5 / F6                 x2: ' + this.sinusdots.x2, 400, 32);
+        this.ctx.fillText('F7 / F8                 y2: ' + this.sinusdots.y2, 400, 64);
 
-        this.ctx.fillText('Shift + LEFT / RIGHT    x4: ' + this.sinusdots.x4, 400, 32);
-        this.ctx.fillText('Shift + UP / DOWN       y4: ' + this.sinusdots.y4, 400, 64);
+        this.ctx.fillText('Shift + LEFT / RIGHT    x4: ' + this.sinusdots.x4, 400, 96);
+        this.ctx.fillText('Shift + UP / DOWN       y4: ' + this.sinusdots.y4, 400, 128);
 
         this.ctx.fillText('Shift + A / D         xInc: ' + this.sinusdots.xInc, 400, 512);
         this.ctx.fillText('Shift + W / S         yInc: ' + this.sinusdots.yInc, 400, 544);
