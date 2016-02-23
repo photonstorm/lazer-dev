@@ -1,1 +1,1 @@
-php_value open_basedir "/Users/rich/Documents/lazer-dev:/Users/rich/Documents/lazer:/home/sites/labs.lazerjs.io/public;D:\wamp\www\lazer-dev\src;D:\wamp\www\lazer-dev"
+php_value open_basedir "/Users/rich/Documents/lazer-dev:/Users/rich/Documents/lazer;/home/sites/labs.lazerjs.io/public;D:\wamp\www\lazer-dev\src;D:\wamp\www\lazer-dev"
