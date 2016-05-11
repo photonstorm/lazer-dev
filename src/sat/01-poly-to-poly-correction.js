@@ -2,7 +2,7 @@
 import PolygonToPolygonCorrection from 'sat/collision/PolygonToPolygonCorrection.js'
 import Vec2 from 'math/vector/vec2/Vec2.js'
 import CorrectionData from 'sat/collision/CorrectionData.js'
-// Rendering
+    // Rendering
 import Canvas from 'canvas/Canvas.js';
 import AddToDOM from 'dom/AddToDOM.js';
 import BackgroundColor from 'canvas/BackgroundColor.js';
@@ -30,7 +30,7 @@ export default class PolygonToPolygonCorrectionGraphics {
 
     constructor() {
 
-        let offset = new Vec2(256, 256);
+        let offset = new Vec2(206, 206);
         let correctionData = new CorrectionData();
         let canvas;
         let ctx;
@@ -41,8 +41,7 @@ export default class PolygonToPolygonCorrectionGraphics {
             new Vec2(offset.x + 0, offset.y + 100),
         ];
 
-        //offset.set(0,0);
-        offset.set(256 + 80, 256);
+        offset.set(0,0);
 
         canvas = Canvas(512, 512);
         AddToDOM(canvas, 'game');
@@ -60,22 +59,25 @@ export default class PolygonToPolygonCorrectionGraphics {
                 new Vec2(offset.x + 100, offset.y + 150),
                 new Vec2(offset.x + 0, offset.y + 100)
             ];
-            // *** This is what really matters. ***
-            if (PolygonToPolygonCorrection(poly0, poly1, correctionData)) {
-                //console.log(correctionData.unit[0], correctionData.unit[1], correctionData.overlap);
-                for (var i = 0; i < poly0.length; ++i) {
-                    poly0[i][0] -= correctionData.correction[0];
-                    poly0[i][1] -= correctionData.correction[1];
-                }
-            }
-            requestAnimationFrame(loop);
+
             ctx.clearRect(0, 0, 512, 512);
+           
             ctx.fillStyle = '#00ff00';
             ctx.strokeStyle = '#00ff00';
+            requestAnimationFrame(loop);
             drawPoly(ctx, poly0);
-            ctx.fillStyle = '#ff0000';
-            ctx.strokeStyle = '#ff0000';
             drawPoly(ctx, poly1);
+
+             // *** This is what really matters. ***
+            if (PolygonToPolygonCorrection(poly0, poly1, correctionData)) {
+                ctx.fillStyle = '#ff0000';
+                ctx.strokeStyle = '#ff0000';
+                let resultPoly = new Array(poly1.length)
+                for (var i = 0; i < resultPoly.length; ++i) {
+                    resultPoly[i] = [poly1[i][0] + correctionData.correction[0],poly1[i][1] + correctionData.correction[1]];
+                }   
+                drawPoly(ctx, resultPoly);
+            }
         }
         loop();
     }
