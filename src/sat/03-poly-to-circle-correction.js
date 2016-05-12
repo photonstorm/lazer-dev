@@ -1,6 +1,7 @@
 // SAT modules
-import PolygonToCircle from 'sat/collision/PolygonToCircle.js'
+import PolygonToCircleCorrection from 'sat/collision/PolygonToCircleCorrection.js'
 import Vec2 from 'math/vector/vec2/Vec2.js'
+import CorrectionData from 'sat/collision/CorrectionData.js'
     // Rendering
 import Canvas from 'canvas/Canvas.js';
 import AddToDOM from 'dom/AddToDOM.js';
@@ -42,9 +43,10 @@ export default class PolygonToCircleCorrectionGraphics {
     constructor() {
 
         let offset = new Vec2(206, 206);
+        let correctionData = new CorrectionData();
         let canvas;
+        let radius = 60;
         let ctx;
-        let radius = 40;
 
         let poly0 = [
             new Vec2(offset.x + 0, offset.y + 0),
@@ -53,7 +55,7 @@ export default class PolygonToCircleCorrectionGraphics {
             new Vec2(offset.x + 0, offset.y + 100)
         ];
 
-        offset.set(0, 0);;
+        offset.set(0, 0);
 
         canvas = Canvas(512, 512);
         AddToDOM(canvas, 'game');
@@ -67,13 +69,15 @@ export default class PolygonToCircleCorrectionGraphics {
         function loop() {
             requestAnimationFrame(loop);
             ctx.clearRect(0, 0, 512, 512);
-            ctx.fillStyle = '#00ff00';
-            ctx.strokeStyle = '#00ff00';
+
             // *** This is what really matters. ***
-            if (PolygonToCircle(poly0, offset, radius)) {
+            if (PolygonToCircleCorrection(poly0, offset, radius, correctionData)) {
                 ctx.fillStyle = '#ff0000';
                 ctx.strokeStyle = '#ff0000';
+                drawCircle(ctx, offset.x - correctionData.correction[0], offset.y - correctionData.correction[1], radius);
             }
+            ctx.fillStyle = '#00ff00';
+            ctx.strokeStyle = '#00ff00';
             drawPoly(ctx, poly0);
             drawCircle(ctx, offset.x, offset.y, radius);
         }
