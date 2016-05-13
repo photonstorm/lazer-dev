@@ -1,5 +1,5 @@
 // SAT modules
-import CircleToCircle from 'sat/collision/CircleToCircle.js'
+import CircleToCircle from 'sat/collision/CircleToCircleTest.js'
 import Vec2 from 'math/vector/vec2/Vec2.js'
     // Rendering
 import Canvas from 'canvas/Canvas.js';
