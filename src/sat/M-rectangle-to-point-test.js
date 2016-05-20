@@ -16,7 +16,7 @@ function drawRect(ctx, rect) {
     ctx.stroke();
 }
 
-export default class RectToRectGraphics {
+export default class RectToPointGraphics {
 
     constructor() {
 
@@ -55,4 +55,4 @@ export default class RectToRectGraphics {
     }
 }
 
-new RectToRectGraphics();
+new RectToPointGraphics();

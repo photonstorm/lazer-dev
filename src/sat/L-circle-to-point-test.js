@@ -18,7 +18,7 @@ function drawCircle(ctx, x, y, radius) {
     ctx.fillRect(x - 2, y - 2, 4, 4);
 }
 
-export default class PolygonToCircleCorrectionGraphics {
+export default class CricleToPointGraphics {
 
     constructor() {
 
@@ -58,4 +58,4 @@ export default class PolygonToCircleCorrectionGraphics {
     }
 }
 
-new PolygonToCircleCorrectionGraphics();
+new CricleToPointGraphics();
