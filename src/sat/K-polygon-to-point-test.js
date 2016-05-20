@@ -1,5 +1,5 @@
 // SAT modules
-import PolygonToPoint from 'sat/collision/PolygonToPointTest.js'
+import PolygonToPoint from 'sat/collision/point/PolygonToPointTest.js'
 import Vec2 from 'math/vector/vec2/Vec2.js'
     // Rendering
 import Canvas from 'canvas/Canvas.js';
