@@ -273,13 +273,11 @@ function finishTest() {
         if (frameCountTEST1 === 0) {
             console.profileEnd('ProfileDataOriented');
             console.profile('ProfileObjectOriented');
-            document.getElementById('testname').innerHTML = 'Running Test-1 benchmark';
             fast2d.setColor(0, 1, 0);
             requestAnimationFrame(loopTEST1);
         } else {
             console.profileEnd('ProfileObjectOriented');
             console.profile('ProfileDataOriented');
-            document.getElementById('testname').innerHTML = 'Running Test-2 benchmark';
             fast2d.setColor(1, 0, 0);
             requestAnimationFrame(loopTEST2);
         }
@@ -294,14 +292,13 @@ function sendData(object) {
 }
 
 function runTests(test) {
+    document.getElementById('testname').innerHTML = 'Running Benchmark...';
     if (test === 0) {
-        document.getElementById('testname').innerHTML = 'Running Test-1 benchmark';
         fast2d.setColor(0, 1, 0);
         console.profile('ProfileObjectOriented');
         requestAnimationFrame(loopTEST1);
 
     } else {
-        document.getElementById('testname').innerHTML = 'Running Test-2 benchmark';
         fast2d.setColor(1, 0, 0);
         console.profile('ProfileDataOriented');
         requestAnimationFrame(loopTEST2);

@@ -26,6 +26,7 @@ body{
 <br>The object oriented uses a common approach similar to this:
 <br>
 <pre>
+// This is TEST-1 approach
 function Particle (x, y, vx, vy) {
     this.x = x;
     this.y = y;
@@ -47,6 +48,7 @@ function MainLoop() {
 </pre>
 <br>In contrast the data oriented one looks like this:
 <pre>
+// This is TEST-2 approach
 function ParticleSystem(capacity) {
     return {
         positionX: new Float32Array(capacity),
@@ -61,10 +63,10 @@ function UpdateParticleSystem(system) {
         velocityX = system.velocityX,
         velocityY = system.velocityY;
 
-    for (var i = 0; i < system.positionX.length; ++i) {
+    for (var i = 0; i < positionX.length; ++i) {
         positionX[i] += velocityX[i];
     }
-    for (var i = 0; i < system.positionX.length; ++i) {
+    for (var i = 0; i < positionY.length; ++i) {
         positionY[i] += velocityY[i];
     }
     ...
