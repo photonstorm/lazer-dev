@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+	body{
+		font-family: Arial;
+	}
+	</style>
+    <title>Read Perf</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.3/Chart.min.js"></script>
+</head>
+<body>
+<div id="totalSamples" style='height: 450px;'></div>
+<input type='button' value='Show All' onclick="getElementById('chartContainer').style.display='block';" />
+<div id="chartContainer" style='display:none;'>
+</div>
+<script type="text/javascript">
+    var data = document.getElementById('myChart');
+
+	function createChart(name, data, target, height) {
+		var container = document.createElement('div');
+		var paragraph = document.createElement('div');
+		var canvas =  document.createElement('canvas');
+		paragraph.innerHTML = name;
+		container.appendChild(paragraph);
+		container.appendChild(canvas);
+		container.style.width = '400px';
+		container.style.height = height ? height : '580px';
+		canvas.width = 400;
+		canvas.height = 400;
+		(target ? target : document.getElementById('chartContainer')).appendChild(container);
+		var context = canvas.getContext('2d');
+		var chart = new Chart(context, {
+			type: 'bar',
+			data: data
+		});
+		return chart;
+	}
+	
+    var totalSamples = 0;
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function (evt) {
+        if (xhr.readyState == 4 && xhr.status == 200) {            
+            var sp = xhr.responseText.split('\0');
+            var avgFPSDOD = 0;
+            var avgFPSOOP = 0;
+            var avgTimeDOD = 0;
+            var avgTimeOOP = 0;
+            var count = 0;
+			var vendor = {};
+			var vendorName = [];
+            for (var i = 0; i < sp.length; ++i) {
+                if (sp[i].length > 0) {
+                    ++count;
+                    var obj = JSON.parse(sp[i].replace('\0', '').replace('\n', ''));
+					//if (obj.vendor.length === 0) {
+					obj.vendor = "Vendor: " + obj.vendor + "<br>User Agent: "+obj.user_agent;
+					//}
+                    if (!vendor[obj.vendor]) {
+						vendor[obj.vendor] = {
+							avgFPSDOD: 0,
+							avgFPSOOP: 0,
+							avgTimeDOD: 0,
+							avgTimeOOP: 0,
+							count: 1
+						};
+						vendorName.push(obj.vendor);
+					} else {
+						++vendor[obj.vendor].count;
+					}
+					vendor[obj.vendor].avgFPSDOD += parseFloat(obj.DOD_AvgFPS);
+                    vendor[obj.vendor].avgFPSOOP += parseFloat(obj.OOP_AvgFPS);
+                    vendor[obj.vendor].avgTimeDOD += parseFloat(obj.DOD_AvgTime);
+                    vendor[obj.vendor].avgTimeOOP += parseFloat(obj.OOP_AvgTime);
+                }
+            }
+			for (var i = 0; i < vendorName.length; ++i) {
+				totalSamples += vendor[vendorName[i]].count;
+                vendor[vendorName[i]].avgFPSDOD /= vendor[vendorName[i]].count;
+				vendor[vendorName[i]].avgFPSOOP /= vendor[vendorName[i]].count;
+				vendor[vendorName[i]].avgTimeDOD /= vendor[vendorName[i]].count;
+				vendor[vendorName[i]].avgTimeOOP /= vendor[vendorName[i]].count;
+                avgTimeOOP += vendor[vendorName[i]].avgTimeOOP;
+                avgTimeDOD += vendor[vendorName[i]].avgTimeDOD;
+                avgFPSOOP += vendor[vendorName[i]].avgFPSOOP;
+                avgFPSDOD += vendor[vendorName[i]].avgFPSDOD;
+				createChart(vendorName[i] + '<br>Sample Count: ' + vendor[vendorName[i]].count, {
+					labels: ['Data Oriented', 'Object Oriented'],
+					datasets: [
+						{
+							label: 'AVG. EXEC. TIME',
+							data: [
+								vendor[vendorName[i]].avgTimeDOD, 
+								vendor[vendorName[i]].avgTimeOOP
+							]
+						}
+					]
+				});
+			}
+            document.getElementById('totalSamples').innerHTML = 'Total Samples: ' + totalSamples;
+            createChart('Total Average Time', {
+                labels: ['Data Oriented', 'Object Oriented'],
+                datasets: [
+                    {
+                        label: 'AVG. EXEC. TIME',
+                        data: [
+                            avgTimeDOD / vendorName.length, 
+                            avgTimeOOP / vendorName.length
+                        ]
+                    }
+                ]                
+            }, document.getElementById('totalSamples'), '450px');            
+        }
+    };
+    xhr.open('GET', 'perf_test_results.txt');
+    xhr.send(null);
+</script>
+</body>
+</html>

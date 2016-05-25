@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+    canvas {
+  -webkit-user-select: none;
+     -moz-user-select: -moz-none;
+      -ms-user-select: none;
+          user-select: none;
+}
+body{
+    font-family: Arial;
+}
+</style>
+    <title>Perf Test JavaScript</title>
+    <script type="text/javascript" src="fast2d.js"></script>
+</head>
+<body>
+<canvas width="320" height="240" id="canvas"></canvas>
+<div id="testname"></div>
+<div>
+<br>Description:</br>
+<br>This test compares the execution time between 
+<br>object-oriented and a data-oriented type of memory 
+<br>access in JavaScript for a simple particle system.
+<br>The object oriented uses a common approach similar to this:
+<br>
+<pre>
+function Particle (x, y, vx, vy) {
+    this.x = x;
+    this.y = y;
+    this.vx = vx;
+    this.vy = vy;
+}
+Particle.prototype.update = function () {
+    this.x += this.vx;
+    this.y += this.vy;  
+};
+function MainLoop() {
+    ...
+    for (var i = 0; i < particles.length; ++i) {
+        particles[i].update();
+        ...
+    }
+    ...
+}
+</pre>
+<br>In contrast the data oriented one looks like this:
+<pre>
+function ParticleSystem(capacity) {
+    return {
+        positionX: new Float32Array(capacity),
+        positionY: new Float32Array(capacity),
+        velocityX: new Float32Array(capacity),
+        velocityY: new Float32Array(capacity)
+    };
+}
+function UpdateParticleSystem(system) {
+    var positionX = system.positionX,
+        positionY = system.positionY,
+        velocityX = system.velocityX,
+        velocityY = system.velocityY;
+
+    for (var i = 0; i < system.positionX.length; ++i) {
+        positionX[i] += velocityX[i];
+    }
+    for (var i = 0; i < system.positionX.length; ++i) {
+        positionY[i] += velocityY[i];
+    }
+    ...
+}
+function MainLoop() {
+    ...
+    UpdateParticleSystem(someSystem);
+    ...
+}
+</pre>
+<br>What we are trying to see if data locality affects
+<br>the performance in JavaScript, since the second 
+<br>approach uses typed arrays which are contiguous blocks
+<br>of memory and in theory we'd get the benefit because we
+<br>avoid random memory access as we do with the object oriented one.
+<br>
+<br>Since every browser might implement a different JavaScript engine
+<br>we would like to see how much performance varies between them for
+<br>this specific test.
+<br>
+</div>
+<script type="text/javascript" src="app.js">
+</script>
+</body>
+</html>
