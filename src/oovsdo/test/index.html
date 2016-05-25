@@ -33,16 +33,19 @@ function Particle (x, y, vx, vy) {
     this.vx = vx;
     this.vy = vy;
 }
-Particle.prototype.update = function () {
-    this.x += this.vx;
-    this.y += this.vy;  
-};
-function MainLoop() {
+function UpdateParticles(particles) {
     ...
     for (var i = 0; i < particles.length; ++i) {
-        particles[i].update();
+        var particle = particles[i];
+        particle.x += particle.vx;
+        particle.y += particle.vy;  
         ...
     }
+    ...
+}
+function MainLoop() {
+    ...
+    UpdateParticles(someParticleArray);
     ...
 }
 </pre>
