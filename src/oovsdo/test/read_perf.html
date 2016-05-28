@@ -11,7 +11,7 @@
 </head>
 <body>
 <div id="totalSamples" style='height: 450px;'></div>
-<input type='button' value='Show All' onclick="getElementById('chartContainer').style.display='block';" />
+<!--<input type='button' value='Show All' onclick="getElementById('chartContainer').style.display='block';" />-->
 <div id="chartContainer" style='display:none;'>
 </div>
 <script type="text/javascript">
@@ -84,7 +84,7 @@
                 avgTimeDOD += vendor[vendorName[i]].avgTimeDOD;
                 avgFPSOOP += vendor[vendorName[i]].avgFPSOOP;
                 avgFPSDOD += vendor[vendorName[i]].avgFPSDOD;
-				createChart(vendorName[i] + '<br>Sample Count: ' + vendor[vendorName[i]].count, {
+				/*createChart(vendorName[i] + '<br>Sample Count: ' + vendor[vendorName[i]].count, {
 					labels: ['Data Oriented', 'Object Oriented'],
 					datasets: [
 						{
@@ -95,7 +95,7 @@
 							]
 						}
 					]
-				});
+				});*/
 			}
             document.getElementById('totalSamples').innerHTML = 'Total Samples: ' + totalSamples;
             createChart('Total Average Time', {

@@ -2,7 +2,8 @@ import {
     RunSimulationFrame
 } from 'physics/arcade/PhysicsSystem.js'
 import {
-    RectangleCollider
+    RectangleCollider,
+    PolygonCollider
 } from 'physics/arcade/Collider.js';
 import {
     Collide,
@@ -20,6 +21,7 @@ import MainLoop from 'system/MainLoop.js';
 function getRandom(min, max) {
     return Math.random() * (max - min) + min;
 }
+
 function drawPoly(ctx, pos, verticesX, verticesY) {
     if (verticesY.length > 2) {
         ctx.beginPath();
@@ -32,7 +34,7 @@ function drawPoly(ctx, pos, verticesX, verticesY) {
         ctx.globalAlpha = 0.2;
         ctx.fill();
         ctx.globalAlpha = 1.0;
-        ctx.fillStyle = '#fff';
+        //ctx.fillStyle = '#fff';
         for (var i = 0; i < verticesY.length; ++i) {
             ctx.fillRect(pos.x + verticesX[i] - 2, pos.y + verticesY[i] - 2, 4, 4);
         }
@@ -46,7 +48,8 @@ export default class App {
         let ctx = null;
         let bodyA = null;
         let bodyB = null;
-
+        let bodies = [];
+        let inc = 0;
         canvas = Canvas(512, 512);
         AddToDOM(canvas, 'game');
         BackgroundColor(canvas, 'rgb(0, 0, 20)');
@@ -57,47 +60,49 @@ export default class App {
         });
         ctx.fillStyle = '#fff';
 
-        bodyA = new Body(256, 356, new RectangleCollider(-50, -50, 100, 100));
+        bodyA = new Body(256, 450, new PolygonCollider([
+            [-228, -50],
+            [-228, -50 + 100],
+            [-228 + 456, -50 + 100],
+            [-128, -50],
+        ]));
+
+        bodyA.immovable = true;
+
         bodyB = new Body(256, 150, new RectangleCollider(-12, -30, 25, 60));
 
-        bodyA.acceleration.y = -0.1;
-        bodyB.bounce.y = 1;
-        bodyA.bounce.y = 1;
+        bodyB.bounce.y = 0.2;
         bodyB.acceleration.y = 0.15;
+        bodyB.velocity.x = 1.5;
 
 
         function begin() {
             ctx.clearRect(0, 0, 512, 512);
         }
 
-        function BodiesCollided() {
-            console.log('Collision detected');
-        }
-
         function update() {
+            ctx.fillStyle = ctx.strokeStyle = '#fff';
             RunSimulationFrame(loop.physicsStep);
-            Collide(bodyA, bodyB, BodiesCollided);
+
+            Collide(bodyA, bodyB);
 
             // Run this after all collision request
             // have been done.
             RunCollisionFrame();
             EmitCollisionCallbacks();
 
-            if (bodyA.position.y < 0) {
-                bodyA.position.x = canvas.width / 2;
-                bodyA.position.y = canvas.height;
-                bodyA.velocity.y = getRandom(-10.0, -1.0);
-            }
             if (bodyB.position.y > 512) {
-                bodyB.position.x = canvas.width / 2;
+                bodyB.position.x = bodyB.position.x > 0 ? 512 : 0;
                 bodyB.position.y = -bodyB.collider.height;
-                bodyB.velocity.y = getRandom(-10.0, -1.0);
+                bodyB.velocity.y = 0;
+                bodyB.velocity.x *= -1;
+                ++inc;
             }
         }
 
         function draw() {
-            drawPoly(ctx, bodyA.position, bodyA.collider.verticesX, bodyA.collider.verticesY);
             drawPoly(ctx, bodyB.position, bodyB.collider.verticesX, bodyB.collider.verticesY);
+            drawPoly(ctx, bodyA.position, bodyA.collider.verticesX, bodyA.collider.verticesY);
             ctx.fillText('fps: ' + loop.fps.toFixed(2), 16, 16);
         }
         let loop = new MainLoop(60);
