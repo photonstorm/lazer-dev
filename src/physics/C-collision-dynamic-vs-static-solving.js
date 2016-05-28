@@ -103,7 +103,6 @@ export default class App {
         function draw() {
             drawPoly(ctx, bodyB.position, bodyB.collider.verticesX, bodyB.collider.verticesY);
             drawPoly(ctx, bodyA.position, bodyA.collider.verticesX, bodyA.collider.verticesY);
-            ctx.fillText('fps: ' + loop.fps.toFixed(2), 16, 16);
         }
         let loop = new MainLoop(60);
         loop.begin = (t => begin(t));
