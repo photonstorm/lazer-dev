@@ -64,14 +64,14 @@ export default class App {
             [-228, -50],
             [-228, -50 + 100],
             [-228 + 456, -50 + 100],
-            [-128, -50],
+            [20, -90],
+            [-128, -90]
         ]));
 
         bodyA.immovable = true;
 
         bodyB = new Body(256, 150, new RectangleCollider(-12, -30, 25, 60));
 
-        bodyB.bounce.y = 0.2;
         bodyB.acceleration.y = 0.15;
         bodyB.velocity.x = 1.5;
 
