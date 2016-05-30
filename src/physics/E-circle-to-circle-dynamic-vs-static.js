@@ -35,6 +35,8 @@ export default class App {
         let ctx = null;
         let bodyA = null;
         let bodyB = null;
+        let bodyC = null;
+        let bodyD = null;
 
         canvas = Canvas(512, 512);
         AddToDOM(canvas, 'game');
@@ -48,34 +50,33 @@ export default class App {
 
         bodyA = new Body(256, 356, new CircleCollider(0, 0, 40));
         bodyB = new Body(250, 150, new CircleCollider(0, 0, 30));
+        bodyC = new Body(0, 256, new CircleCollider(0, 0, 120));
+        bodyD = new Body(canvas.width, 256, new CircleCollider(0, 0, 120));
 
-        bodyA.acceleration.y = -0.3;
-        bodyB.bounce.y = 1;
-        bodyA.bounce.y = 1;
-        bodyB.acceleration.y = 0.3;
+        bodyB.bounce.y = 0.8;
+        bodyB.acceleration.y = 0.5;
+        bodyA.immovable = true;
+        bodyC.immovable = true;
+        bodyD.immovable = true;
+
 
         function begin() {
             ctx.clearRect(0, 0, 512, 512);
         }
 
-        function BodiesCollided() {
-        }
+        function BodiesCollided() {}
 
         function update() {
             RunSimulationFrame(loop.physicsStep);
             Collide(bodyA, bodyB, BodiesCollided);
+            Collide(bodyC, bodyB, BodiesCollided);
+            Collide(bodyD, bodyB, BodiesCollided);
 
             // Run this after all collision request
             // have been done.
             RunCollisionFrame();
             EmitCollisionCallbacks();
 
-            if (bodyA.position.y < 0) {
-                bodyA.position.x = canvas.width / 2 + getRandom(-50, 50);
-                bodyA.position.y = canvas.height;
-                bodyA.velocity.y = 0;
-                bodyA.velocity.x = 0;
-            }
             if (bodyB.position.y > 512) {
                 bodyB.position.x = canvas.width / 2 + getRandom(-50, 50);
                 bodyB.position.y = -bodyB.collider.radius;
@@ -85,7 +86,12 @@ export default class App {
         }
 
         function draw() {
+            ctx.fillStyle = '#fff';
             drawCircle(ctx, bodyA.position.x, bodyA.position.y, bodyA.collider.radius);
+            drawCircle(ctx, bodyC.position.x, bodyC.position.y, bodyC.collider.radius);
+
+            drawCircle(ctx, bodyD.position.x, bodyD.position.y, bodyD.collider.radius);
+            ctx.fillStyle = '#ff0000';
             drawCircle(ctx, bodyB.position.x, bodyB.position.y, bodyB.collider.radius);
         }
         let loop = new MainLoop(60);
