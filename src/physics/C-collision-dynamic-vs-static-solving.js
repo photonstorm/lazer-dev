@@ -49,7 +49,7 @@ export default class App {
         let bodyA = null;
         let bodyB = null;
         let bodies = [];
-        let inc = 0;
+        let jumping = false;
         canvas = Canvas(512, 512);
         AddToDOM(canvas, 'game');
         BackgroundColor(canvas, 'rgb(0, 0, 20)');
@@ -73,9 +73,28 @@ export default class App {
         bodyB = new Body(256, 150, new RectangleCollider(-12, -30, 25, 60));
 
         bodyB.acceleration.y = 0.15;
-        bodyB.velocity.x = 1.5;
+        //bodyB.velocity.x = 3.5;
 
-
+        window.onkeydown = function(e) {
+            if (e.keyCode === 65) {
+                bodyB.velocity.x = -3.5;
+            } else if (e.keyCode === 68) {
+                bodyB.velocity.x = 3.5;
+            }
+            if (e.keyCode === 87 && !jumping) {
+                bodyB.velocity.y -= 5.5;
+                jumping = true;
+            }
+        };
+        window.onkeyup = function(e) {
+            if (e.keyCode === 65 ||
+                e.keyCode === 68) {
+                bodyB.velocity.x = 0;
+            }
+            if (e.keyCode === 87) {
+                jumping = false;
+            }
+        };
         function begin() {
             ctx.clearRect(0, 0, 512, 512);
         }
@@ -92,11 +111,13 @@ export default class App {
             EmitCollisionCallbacks();
 
             if (bodyB.position.y > 512) {
-                bodyB.position.x = bodyB.position.x > 0 ? 512 : 0;
                 bodyB.position.y = -bodyB.collider.height;
                 bodyB.velocity.y = 0;
-                bodyB.velocity.x *= -1;
-                ++inc;
+            }
+            if (bodyB.position.x < 0) {
+                bodyB.position.x = 512;
+            } else if (bodyB.position.x > 512) {
+                bodyB.position.x = 0;
             }
         }
 
