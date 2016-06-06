@@ -1,10 +1,5 @@
-import {
-    RunSimulationFrame
-}
-from 'physics/arcade/PhysicsSystem.js'
-import {
-    RectangleCollider
-} from 'physics/arcade/Collider.js'
+import UpdatePhysics from 'physics/arcade/system/PhysicsSystem.js'
+import RectangleCollider from 'physics/arcade/collider/RectangleCollider.js'
 import Body from 'physics/arcade/Body.js'
 import Vec2 from 'math/vector/vec2/Vec2.js'
 // Rendering
@@ -24,7 +19,7 @@ export default class App {
         let canvas = null;
         let ctx = null;
         let body = null;
-        let bodies = new Array(1000);
+        let bodies = new Array(4000);
 
         canvas = Canvas(512, 512);
         AddToDOM(canvas, 'game');
@@ -48,7 +43,7 @@ export default class App {
         }
 
         function update() {
-            RunSimulationFrame(loop.physicsStep);
+            UpdatePhysics(loop.physicsStep);
         }
 
         function draw() {

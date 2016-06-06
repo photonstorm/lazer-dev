@@ -77,9 +77,9 @@ export default class App {
 
         window.onkeydown = function(e) {
             if (e.keyCode === 65) {
-                bodyB.velocity.x = -3.5;
+                bodyB.velocity.x = -6.5;
             } else if (e.keyCode === 68) {
-                bodyB.velocity.x = 3.5;
+                bodyB.velocity.x = 6.5;
             }
             if (e.keyCode === 87 && !jumping) {
                 bodyB.velocity.y -= 5.5;
