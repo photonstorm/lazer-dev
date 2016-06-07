@@ -58,15 +58,15 @@ export default class App {
             [-228, -50],
             [-228, -50 + 100],
             [-228 + 456, -50 + 100],
-            [20, -90],
-            [-128, -100]
+            [128, -90]
         ]));
         bodyB = new Body(256, 150, new RectangleCollider(0, 0, 25, 60));
 
-        bodyA.acceleration.y = -0.1;
+        bodyA.acceleration.y = -0.05;
         bodyB.bounce.y = 1;
-        bodyA.bounce.y = 1;
-        bodyB.acceleration.y = 0.15;
+        bodyB.mass = 4;
+        bodyA.bounce.y = 0.5;
+        bodyB.acceleration.y = 0.05;
 
 
         function begin() {
@@ -95,12 +95,14 @@ export default class App {
             if (bodyA.position.y < 0) {
                 bodyA.position.x = canvas.width / 2;
                 bodyA.position.y = canvas.height;
-                bodyA.velocity.y = getRandom(-10.0, -1.0);
+                bodyA.velocity.x = 0;
+                bodyA.velocity.y = 0;
             }
             if (bodyB.position.y > 512) {
                 bodyB.position.x = canvas.width / 2;
                 bodyB.position.y = -bodyB.collider.height;
-                bodyB.velocity.y = getRandom(-10.0, -1.0);
+                bodyB.velocity.x = 0;
+                bodyB.velocity.y = 0;
             }
         }
 
