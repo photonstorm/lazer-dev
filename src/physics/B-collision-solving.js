@@ -1,14 +1,11 @@
-import {
-    RunSimulationFrame
-} from 'physics/arcade/PhysicsSystem.js'
-import {
-    RectangleCollider
-} from 'physics/arcade/Collider.js';
+import UpdatePhysics from 'physics/arcade/system/PhysicsSystem.js'
+import RectangleCollider from 'physics/arcade/collider/RectangleCollider.js'
+import PolygonCollider from 'physics/arcade/collider/PolygonCollider.js'
 import {
     Collide,
-    RunCollisionFrame,
-    EmitCollisionCallbacks
-} from 'physics/arcade/CollisionSystem.js'
+    Overlap,
+    UpdateCollisions
+} from 'physics/arcade/system/CollisionSystem.js'
 import Body from 'physics/arcade/Body.js'
 import Vec2 from 'math/vector/vec2/Vec2.js'
 // Rendering
@@ -20,6 +17,7 @@ import MainLoop from 'system/MainLoop.js';
 function getRandom(min, max) {
     return Math.random() * (max - min) + min;
 }
+
 function drawPoly(ctx, pos, verticesX, verticesY) {
     if (verticesY.length > 2) {
         ctx.beginPath();
@@ -55,10 +53,15 @@ export default class App {
             mouse.x = evt.clientX - evt.target.offsetLeft;
             mouse.y = evt.clientY - evt.target.offsetTop;
         });
-        ctx.fillStyle = '#fff';
-
-        bodyA = new Body(256, 356, new RectangleCollider(-50, -50, 100, 100));
-        bodyB = new Body(256, 150, new RectangleCollider(-12, -30, 25, 60));
+        ctx.strokeStyle = ctx.fillStyle = '#fff';
+        bodyA = new Body(256, 450, new PolygonCollider([
+            [-228, -50],
+            [-228, -50 + 100],
+            [-228 + 456, -50 + 100],
+            [20, -90],
+            [-128, -100]
+        ]));
+        bodyB = new Body(256, 150, new RectangleCollider(0, 0, 25, 60));
 
         bodyA.acceleration.y = -0.1;
         bodyB.bounce.y = 1;
@@ -70,18 +73,24 @@ export default class App {
             ctx.clearRect(0, 0, 512, 512);
         }
 
-        function BodiesCollided() {
-            console.log('Collision detected');
+        function BodiesCollided(a, b) {
+            //console.log(a, b);
+            //console.log('Collision detected');
+            ctx.strokeStyle = ctx.fillStyle = '#ff0000';
         }
 
         function update() {
-            RunSimulationFrame(loop.physicsStep);
+            ctx.strokeStyle = ctx.fillStyle = '#fff';
+
+            //bodyB.position.x = mouse.x;
+           /// bodyB.position.y = mouse.y;
+
+            UpdatePhysics(loop.physicsStep);
             Collide(bodyA, bodyB, BodiesCollided);
 
             // Run this after all collision request
             // have been done.
-            RunCollisionFrame();
-            EmitCollisionCallbacks();
+            UpdateCollisions();
 
             if (bodyA.position.y < 0) {
                 bodyA.position.x = canvas.width / 2;
@@ -100,6 +109,8 @@ export default class App {
             drawPoly(ctx, bodyB.position, bodyB.collider.verticesX, bodyB.collider.verticesY);
             ctx.fillText('fps: ' + loop.fps.toFixed(2), 16, 16);
         }
+
+
         let loop = new MainLoop(60);
         loop.begin = (t => begin(t));
         loop.update = (delta => update(delta));
