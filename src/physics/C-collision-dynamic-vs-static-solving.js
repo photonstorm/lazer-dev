@@ -1,15 +1,12 @@
-import {
-    RunSimulationFrame
-} from 'physics/arcade/PhysicsSystem.js'
-import {
-    RectangleCollider,
-    PolygonCollider
-} from 'physics/arcade/Collider.js';
+import UpdatePhysics from 'physics/arcade/system/PhysicsSystem.js'
+import RectangleCollider from 'physics/arcade/collider/RectangleCollider.js'
+import PolygonCollider from 'physics/arcade/collider/PolygonCollider.js'
 import {
     Collide,
-    RunCollisionFrame,
-    EmitCollisionCallbacks
-} from 'physics/arcade/CollisionSystem.js'
+    Overlap,
+    UpdateCollisions
+} from 'physics/arcade/system/CollisionSystem.js'
+
 import Body from 'physics/arcade/Body.js'
 import Vec2 from 'math/vector/vec2/Vec2.js'
 // Rendering
@@ -64,16 +61,16 @@ export default class App {
             [-228, -50],
             [-228, -50 + 100],
             [-228 + 456, -50 + 100],
-            [20, -90],
-            [-128, -90]
+            [20, -190],
+            [-128, -190]
         ]));
 
         bodyA.immovable = true;
 
         bodyB = new Body(256, 150, new RectangleCollider(-12, -30, 25, 60));
-
         bodyB.acceleration.y = 0.15;
-        //bodyB.velocity.x = 3.5;
+        bodyB.friction.x = 1;
+        bodyB.friction.y = 1;
 
         window.onkeydown = function(e) {
             if (e.keyCode === 65) {
@@ -101,14 +98,13 @@ export default class App {
 
         function update() {
             ctx.fillStyle = ctx.strokeStyle = '#fff';
-            RunSimulationFrame(loop.physicsStep);
+            UpdatePhysics(loop.physicsStep);
 
             Collide(bodyA, bodyB);
 
             // Run this after all collision request
             // have been done.
-            RunCollisionFrame();
-            EmitCollisionCallbacks();
+            UpdateCollisions();
 
             if (bodyB.position.y > 512) {
                 bodyB.position.y = -bodyB.collider.height;

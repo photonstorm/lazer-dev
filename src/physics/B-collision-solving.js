@@ -64,7 +64,6 @@ export default class App {
 
         bodyA.acceleration.y = -0.05;
         bodyB.bounce.y = 1;
-        bodyB.mass = 4;
         bodyA.bounce.y = 0.5;
         bodyB.acceleration.y = 0.05;
 
@@ -81,10 +80,6 @@ export default class App {
 
         function update() {
             ctx.strokeStyle = ctx.fillStyle = '#fff';
-
-            //bodyB.position.x = mouse.x;
-           /// bodyB.position.y = mouse.y;
-
             UpdatePhysics(loop.physicsStep);
             Collide(bodyA, bodyB, BodiesCollided);
 
