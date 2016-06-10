@@ -45,8 +45,12 @@ export default class App {
         let ctx = null;
         let bodyA = null;
         let bodyB = null;
+        let bodyC = null;
+        let bodyE = null;
         let bodies = [];
-        let jumping = false;
+        let jump = false;
+        let directionX = 0;
+        let directionY = 0;
         canvas = Canvas(512, 512);
         AddToDOM(canvas, 'game');
         BackgroundColor(canvas, 'rgb(0, 0, 20)');
@@ -57,50 +61,70 @@ export default class App {
         });
         ctx.fillStyle = '#fff';
 
-        bodyA = new Body(256, 450, new PolygonCollider([
-            [-228, -50],
-            [-228, -50 + 100],
-            [-228 + 456, -50 + 100],
-            [20, -190],
-            [-128, -190]
+        bodyA = new Body(256, 400, new PolygonCollider([
+            [-108, -50],
+            [-108, 0],
+            [-108 + 217, 0],
+            [109, -100],
+            [-50, -100]
         ]));
 
-        bodyA.immovable = true;
 
         bodyB = new Body(256, 150, new RectangleCollider(-12, -30, 25, 60));
-        bodyB.acceleration.y = 0.15;
-        bodyB.friction.x = 1;
-        bodyB.friction.y = 1;
+        bodyC = new Body(0, 350, new RectangleCollider(0, 0, 148, 50));
+        bodyE = new Body(365, 350, new RectangleCollider(0, 0, 155, 50));
+
+        bodyB.acceleration.y = 0.4;
+        bodyB.maxVelocity.y = 15;
+
+        bodyA.immovable = true;
+        bodyC.immovable = true;
+        bodyE.immovable = true;
 
         window.onkeydown = function(e) {
             if (e.keyCode === 65) {
-                bodyB.velocity.x = -6.5;
+                directionX = -1;
             } else if (e.keyCode === 68) {
-                bodyB.velocity.x = 6.5;
+                directionX = 1;
             }
-            if (e.keyCode === 87 && !jumping) {
-                bodyB.velocity.y -= 5.5;
-                jumping = true;
+            if (e.keyCode === 87 && !jump) {
+                bodyB.velocity.y = -8.5;
+                jump = true;
             }
         };
         window.onkeyup = function(e) {
-            if (e.keyCode === 65 ||
-                e.keyCode === 68) {
-                bodyB.velocity.x = 0;
+            if (e.keyCode === 65) {
+                directionX = 0;
+            } else if (e.keyCode === 68) {
+                directionX = 0;
             }
             if (e.keyCode === 87) {
-                jumping = false;
+                jump = false;
             }
-        };
+        }
         function begin() {
             ctx.clearRect(0, 0, 512, 512);
         }
 
         function update() {
+            bodyB.velocity.x = 0;
+            if (directionX == -1) {
+                bodyB.velocity.x = -2.5;
+            } else if (directionX == 1) {
+                bodyB.velocity.x = 2.5;
+            }
+            if (directionY == -1) {
+                bodyB.velocity.y = -2.5;
+            } else if (directionY == 1) {
+                bodyB.velocity.y = 2.5;
+            }
+
             ctx.fillStyle = ctx.strokeStyle = '#fff';
             UpdatePhysics(loop.physicsStep);
 
             Collide(bodyA, bodyB);
+            Collide(bodyC, bodyB);
+            Collide(bodyE, bodyB);
 
             // Run this after all collision request
             // have been done.
@@ -108,7 +132,8 @@ export default class App {
 
             if (bodyB.position.y > 512) {
                 bodyB.position.y = -bodyB.collider.height;
-                bodyB.velocity.y = 0;
+            } else if (bodyB.position.y < -bodyB.collider.height) {
+                bodyB.position.y = 512;
             }
             if (bodyB.position.x < 0) {
                 bodyB.position.x = 512;
@@ -120,6 +145,8 @@ export default class App {
         function draw() {
             drawPoly(ctx, bodyB.position, bodyB.collider.verticesX, bodyB.collider.verticesY);
             drawPoly(ctx, bodyA.position, bodyA.collider.verticesX, bodyA.collider.verticesY);
+            drawPoly(ctx, bodyC.position, bodyC.collider.verticesX, bodyC.collider.verticesY);
+            drawPoly(ctx, bodyE.position, bodyE.collider.verticesX, bodyE.collider.verticesY);
         }
         let loop = new MainLoop(60);
         loop.begin = (t => begin(t));
