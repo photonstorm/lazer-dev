@@ -70,10 +70,12 @@ export default class App {
         ]));
 
 
-        bodyB = new Body(256, 150, new RectangleCollider(-12, -30, 25, 60));
+        bodyB = new Body(256, 150, new RectangleCollider(-30, -30, 60, 60));
         bodyC = new Body(0, 350, new RectangleCollider(0, 0, 148, 50));
         bodyE = new Body(365, 350, new RectangleCollider(0, 0, 155, 50));
 
+
+        bodyB.angularVelocity = 0.01;
         bodyB.acceleration.y = 0.4;
         bodyB.maxVelocity.y = 15;
 
