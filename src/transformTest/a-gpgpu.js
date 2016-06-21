@@ -1,7 +1,3 @@
-import Canvas from 'canvas/Canvas.js';
-import AddToDOM from 'dom/AddToDOM.js';
-import BackgroundColor from 'canvas/BackgroundColor.js';
-
 //*********//
 // Globals //
 //*********//
@@ -67,26 +63,6 @@ function CreateShaderProgram(vs, fs) {
     return Shader(program, vertexShader, fragmentShader);
 }
 
-function CreateComputeTexture(jsArray) {
-    var floatArray = new Float32Array(jsArray);
-    var texture = gl.createTexture();
-    var dimensions = Math.sqrt(floatArray.length) | 0;
-    var byteData = new Uint8Array(floatArray.buffer);
-    assert(IsPow2(floatArray.length), 'Data length is not power of 2.');
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, dimensions, dimensions, 0, gl.RGBA, gl.UNSIGNED_BYTE, byteData);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    texture.floatBuffer = floatArray;
-    texture.byteBuffer = byteData;
-    texture.dimensions = dimensions;
-    return texture;
-}
-
 function CreateRenderTarget(width, height) {
     var texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -99,13 +75,13 @@ function CreateRenderTarget(width, height) {
     return texture;
 }
 
-function CreateFramebuffer(dimensions) {
+function CreateFramebuffer(width, height) {
     var fbo = gl.createFramebuffer();
     var rbo = gl.createRenderbuffer();
     var tex = null;
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.bindRenderbuffer(gl.RENDERBUFFER, rbo);
-    tex = CreateRenderTarget(dimensions, dimensions);
+    tex = CreateRenderTarget(width, height);
     gl.framebufferTexture2D(
         gl.FRAMEBUFFER,
         gl.COLOR_ATTACHMENT0,
@@ -114,48 +90,75 @@ function CreateFramebuffer(dimensions) {
         0
     );
     assert(gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE, 'Frame buffer incomplete');
+    gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindRenderbuffer(gl.RENDERBUFFER, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    fbo.dimensions = dimensions;
+    fbo.width = width;
+    fbo.height = height;
     fbo.targetTexture = tex;
     return fbo;
 }
 
-function BindComputeFramebuffer(fbo) {
-    gl.viewport(0, 0, fbo.dimensions, fbo.dimensions);
+function BindFramebuffer(fbo) {
+    gl.viewport(0, 0, fbo.width, fbo.height);
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
 }
 
-function UnbindComputeFramebuffer() {
+function UnbindFramebuffer() {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.viewport(0, 0, canvas.width, canvas.height);
+}
+
+//****************//
+// GPGPU Specific //
+//****************//
+function CreateComputeTexture(shaderProgram, samplerName, jsArray) {
+    var floatArray = new Float32Array(jsArray);
+    var texture = gl.createTexture();
+    var dimensions = Math.sqrt(floatArray.length) | 0;
+    var byteData = new Uint8Array(floatArray.buffer);
+    assert(IsPow2(floatArray.length), 'Data length is not power of 2.');
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, dimensions, dimensions, 0, gl.RGBA, gl.UNSIGNED_BYTE, byteData);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    texture.floatBuffer = floatArray;
+    texture.byteBuffer = byteData;
+    texture.dimensions = dimensions;
+    texture.itemCount = jsArray.length;
+    texture.samplerLocation = gl.getUniformLocation(shaderProgram, samplerName);
+    //console.log('Packed 32-Bit Float Data: ', floatArray);
+    return texture;
+}
+
+function BindComputeTexture(texture, textureUnit) {
+    gl.uniform1i(texture.samplerLocation, textureUnit);
+    gl.activeTexture(gl.TEXTURE0 + textureUnit);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
 }
 
 function IsPow2(value) {
     return (value & (value - 1)) == 0;
 }
 
-function copyObject(obj) {
-    var copy = {};
-    for (var n in obj) {
-        if (typeof obj[n] !== 'function') {
-            copy[n] = obj[n];
-        } else if (typeof obj[n] === 'object') {
-            copy[n] = obj[n].toString();
-        }
-    }
-    return copy;
+function getGPUOutput(fsize, fbo) {
+    var buffer = null;
+    var output = null;
+    output = new Float32Array(fsize);
+    buffer = new Uint8Array(output.buffer);
+    gl.readPixels(0, 0, fbo.width, fbo.height, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
+    return output;
 }
 
-function getGPUOutput(computeTexture, sampleSize) {
-    var buffer = new Uint8Array(computeTexture.floatBuffer.byteLength);
-    var output = null;
-    gl.readPixels(0, 0, 2, 2, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
-    output = new Float32Array(buffer.buffer);
-    console.log('original uint8:', computeTexture.byteBuffer.subarray(0, sampleSize * 4));
-    console.log('original float32:', computeTexture.floatBuffer.subarray(0, sampleSize))
-    console.log('output uint8 buffer:', buffer.subarray(0, sampleSize * 4));
-    console.log('output float32 buffer:', output.subarray(0, sampleSize));
+function getMaxValue(array) {
+    var max = 0;
+    for (var i = 0, l = array.length; i < l; ++i) {
+        max = array[i] > max ? array[i] : max;
+    }
+    return max;
 }
 
 //*************//
@@ -173,7 +176,12 @@ function getGPUOutput(computeTexture, sampleSize) {
         fComputeSource = [
             'precision highp float;',
             'varying vec2 outUV;',
-            'uniform sampler2D sampler;',
+            'uniform sampler2D sampler0;',
+            'uniform sampler2D sampler1;',
+            'uniform sampler2D sampler2;',
+            'uniform sampler2D sampler3;',
+            // Source for RGBA <-> 32-Bit Float Encoding
+            // http://stackoverflow.com/a/7237286
             'highp vec4 encode32(highp float f) {',
             '    highp float e =5.0;',
             '    highp float F = abs(f); ',
@@ -196,11 +204,13 @@ function getGPUOutput(computeTexture, sampleSize) {
             '    return Result;',
             '}',
             'void main() {',
-            '   float scalar = decode32(texture2D(sampler, outUV).abgr * 255.0) ;',
+            '   float aX = decode32(texture2D(sampler0, outUV).abgr * 255.0) ;',
+            '   float aY = decode32(texture2D(sampler1, outUV).abgr * 255.0) ;',
+            '   float bX = decode32(texture2D(sampler2, outUV).abgr * 255.0) ;',
+            '   float bY = decode32(texture2D(sampler3, outUV).abgr * 255.0) ;',
             //  Simple Computation for testing.
-            '   scalar *= 2.0;',
-            '   vec4 result = encode32(scalar).abgr / 255.0;',
-            '   gl_FragColor = result;',
+            '   vec4 vecResult = encode32(sqrt((aX  - bX) * (aX  - bX) + (aY  - bY) * (aY  - bY))).abgr / 255.0;',
+            '   gl_FragColor = vecResult;',
             '}'
         ].join('\n'),
         fOutputSource = [
@@ -216,15 +226,27 @@ function getGPUOutput(computeTexture, sampleSize) {
         loc = null,
         vbo = null,
         fbo = null,
-        uvData = new Float32Array([-1, -1, 0, 0, 1, 1, 1, 1, -1, 1, 0, 1, -1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1]),
-        computeTexture = null;
+        computeTexture0 = null,
+        computeTexture1 = null,
+        computeTexture2 = null,
+        computeTexture3 = null,
+        sqrtSampleSize = 1024,
+        maxComp = sqrtSampleSize * sqrtSampleSize,
+        testDataPX = new Float32Array(maxComp),
+        testDataPY = new Float32Array(maxComp),
+        testDataVX = new Float32Array(maxComp),
+        testDataVY = new Float32Array(maxComp),
+        t0 = 0,
+        t1 = 0,
+        gpuTime = 0,
+        cpuTime = 0,
+        cpuOutput = new Float32Array(maxComp);
 
-    canvas = Canvas(512, 512);
-    AddToDOM(canvas, 'game');
 
     //***************//
     // WebGL Prelude //
     //***************//
+    canvas = document.createElement('canvas');
     gl = canvas.getContext('experimental-webgl');
     window.gl = gl;
     shaderOutput = CreateShaderProgram(vComputeSource, fOutputSource);
@@ -233,36 +255,77 @@ function getGPUOutput(computeTexture, sampleSize) {
     loc = gl.getAttribLocation(shaderCompute.program, 'inUV');
     vbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-    gl.bufferData(gl.ARRAY_BUFFER, uvData, gl.STATIC_DRAW);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([-1, -1, 0, 0, 1, 1, 1, 1, -1, 1, 0, 1, -1, -1, 0, 0, 1, -1, 1, 0, 1, 1, 1, 1]),
+        gl.STATIC_DRAW
+    );
     gl.enableVertexAttribArray(loc);
     gl.vertexAttribPointer(loc, 4, gl.FLOAT, gl.FALSE, 0, 0);
+
     //***************//
+    // Generate Data //
+    //***************//
+    for (var i = 0; i < maxComp; ++i) {
+        testDataPX[i] = i + ((Math.random() * i) % 10);
+        testDataPY[i] = i + ((Math.random() * i) % 10);
+        testDataVX[i] = i + ((Math.random() * i) % 10);
+        testDataVY[i] = i + ((Math.random() * i) % 10);
+    }
 
     //********************//
     // Setup Compute Data //
     //********************//
-    computeTexture = CreateComputeTexture(
-    //  Simple input data to feed the GPU
-        [1.4, 2.3, 3.2, 4.1]
+    fbo = CreateFramebuffer(sqrtSampleSize, sqrtSampleSize);
+    BindFramebuffer(fbo);
+    computeTexture0 = CreateComputeTexture(
+        shaderCompute.program, 'sampler0',
+        testDataPX
     );
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    fbo = CreateFramebuffer(computeTexture.dimensions);
-    BindComputeFramebuffer(fbo);
+    computeTexture1 = CreateComputeTexture(
+        shaderCompute.program, 'sampler1',
+        testDataPY
+    );
+    computeTexture2 = CreateComputeTexture(
+        shaderCompute.program, 'sampler2',
+        testDataVX
+    );
+    computeTexture3 = CreateComputeTexture(
+        shaderCompute.program, 'sampler3',
+        testDataVY
+    );
     //*********************//
     // Execute GPU Compute //
     //*********************//
-    gl.bindTexture(gl.TEXTURE_2D, computeTexture);
+    BindComputeTexture(computeTexture0, 0);
+    BindComputeTexture(computeTexture1, 1);
+    BindComputeTexture(computeTexture2, 2);
+    BindComputeTexture(computeTexture3, 3);
+    console.log('Sampling %d 2D vectors', maxComp * 2);
+    t0 = performance.now();
     gl.drawArrays(gl.TRIANGLES, 0, 6);
-    getGPUOutput(computeTexture, 4);
+    t1 = performance.now();
+    //var maxValue = getMaxValue(getGPUOutput(maxComp, fbo));
+    gpuTime = t1 - t0;
+    console.log('GPU Execution Time: %f milliseconds', gpuTime);
+
+    t0 = performance.now();
+    for (var i = 0, aX = 0, aY = 0, bX = 0, bY = 0, sqrt = Math.sqrt; i < maxComp; ++i) {
+        aX = testDataPX[i];
+        aY = testDataPY[i];
+        bX = testDataVX[i];
+        bY = testDataVY[i];
+        cpuOutput[i] = sqrt((aX - bX) * (aX - bX) + (aY - bY) * (aY - bY));
+    }
+    //maxValue = getMaxValue(cpuOutput);
+    t1 = performance.now();
+    cpuTime = t1 - t0;
+    console.log('CPU Execution Time: %f milliseconds', cpuTime);
+
+    // Cleanup
+    UnbindFramebuffer();
     shaderCompute.disable();
-    //**************//
-    // Draw Output  //
-    //**************//
-    // This part isn't necessary
-    UnbindComputeFramebuffer();
+    shaderCompute.discard();
     shaderOutput.enable();
-    gl.clearColor(0, 0, 0, 1);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.bindTexture(gl.TEXTURE_2D, fbo.targetTexture);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    shaderOutput.discard();
 }());
