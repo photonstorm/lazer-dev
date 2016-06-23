@@ -1,84 +1,84 @@
-// Intrusive List design
-// from Doom 3
-class IntrusiveList {
-	constructor(owner = null) {
-		this.prev = this;
-		this.next = this;
-		this.head = this;
-		this.owner = owner;
-	}
-	count() {
-		let count = 0;
-		let head = this.head;
-		for (let node = head.next; node != head; node = node.next) {
-			++count;
-		}
-		return count;
-	}
-	selfRemove() {
-		this.prev.next = this.next;
-		this.next.prev = this.prev;
-		this.next = this;
-		this.prev = this;
-		this.head = this;
-	}
-	clear() {
-		if (this.head !== this) {
-			while (this.next !== this) {
-				this.next.selfRemove();
-			}
-		} else {
-			this.selfRemove();
-		}
-	}
-	selfInsertBefore(target) {
-		this.selfRemove();
-		this.next = target;
-		this.prev = target.prev;
-		target.prev = this;
-		this.prev.next = this;
-		this.head = target.head;
-	}
-	selfInsertAfter(target) {
-		this.selfRemove();
-		this.prev = target;
-		this.next = target.next;
-		target.next = this;
-		this.next.prev = this;
-		this.head = target.head;
-	}
-	selfInsertTail(target) {
-		this.selfInsertBefore(target.head);
-	}
-	selfInsertHead(target) {
-		this.selfInsertAfter(target.head);
-	}
-}
-
 class Transform {
 	constructor(name) {
+		var parent = {
+				prev: null,
+				next: null,
+				head: null,
+				owner: this
+			},
+			children = {
+				prev: null,
+				next: null,
+				head: null,
+				owner: this
+			};
+		parent.prev = parent;
+		parent.next = parent;
+		parent.head = parent;
+		children.prev = children;
+		children.next = children;
+		children.head = children;
+		this._parent = parent;
+		this._children = children;
 		// for test purpose only
 		this.name = name;
-		this._parent = new IntrusiveList(this);
-		this._children = new IntrusiveList(this);
 	}
 	removeParent() {
-		this._parent.selfRemove();
+		let parent = this._parent;
+		parent.prev.next = parent.next;
+		parent.next.prev = parent.prev;
+		parent.next = parent;
+		parent.prev = parent;
+		parent.head = parent;
 	}
 	removeChild(child) {
-		child._parent.selfRemove();
+		child.removeParent();
+	}
+	removeAllChildren() {
+		let children = this._children;
+		let next = null;
+		if (children.head !== children) {
+			next = children.next;
+			while (next !== children) {
+				next.prev.next = next.next;
+				next.next.prev = next.prev;
+				next.next = next;
+				next.prev = next;
+				next.head = next;
+				next = children.next;
+			}
+		} else {
+			children.prev.next = children.next;
+			children.next.prev = children.prev;
+			children.next = children;
+			children.prev = children;
+			children.head = children;
+		}
 	}
 	setParent(parentTransform) {
-		this._parent.selfInsertTail(parentTransform._children);
+		let parent = this._parent;
+		let target = parentTransform._children;
+		this.removeParent();
+		parent.next = target;
+		parent.prev = target.prev;
+		target.prev = parent;
+		parent.prev.next = parent;
+		parent.head = target.head;
 	}
 	getParent() {
 		return this._parent.head.owner;
 	}
 	getChildrenCount() {
-		return this._children.count();
+		let count = 0;
+		let head = this._children.head;
+		for (let node = head.next; node != head; node = node.next) {
+			++count;
+		}
+		return count;
 	}
 	forEachChild(callback) {
-		for (let node = this._children.head.next; node != this._children.head; node = node.next) {
+		let head = this._children.head;
+		for (let node = head.next; node != head; node = node.next) {
 			callback(node.owner);
 		}
 	}
@@ -99,12 +99,11 @@ function assert(expr, message) {
 	var t3 = new Transform('World');
 	var names = '';
 
-	t0.setParent(t_root);	
-	t1.setParent(t_root);	
-	t2.setParent(t_root);	
-	t3.setParent(t_root);	
-
-	t_root.forEachChild(function(child) {
+	t0.setParent(t_root);
+	t1.setParent(t_root);
+	t2.setParent(t_root);
+	t3.setParent(t_root);
+	t_root.forEachChild(function (child) {
 		names += child.name;
 	});
 	assert(names === 'FooBarHelloWorld', 'Invalid childrens');
@@ -119,4 +118,7 @@ function assert(expr, message) {
 	t_root.removeChild(t1);
 	assert(t1.getParent().name === 'Bar', 'Failed to remove child');
 	console.log('t1 parent name:', t1.getParent().name);
+	t_root.removeAllChildren();
+	assert(t_root.getChildrenCount() === 0, 'Failed to remove all children');
+	console.log('root children count:', t_root.getChildrenCount());
 }());
