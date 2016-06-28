@@ -406,7 +406,7 @@ function intrusiveListTest() {
 	t_root.forEachChild(function (child) {
 		names += child.name;
 	});
-	assert(names === 'FooBarHelloWorld', 'Invalid childrens');
+	assert(names === 'FooBarHelloWorld', 'Invalid children');
 	console.log(names);
 	assert(t3.getParent().name === 'IAmRoot', 'Invalid root');
 	console.log('Parent name:', t3.getParent().name);
