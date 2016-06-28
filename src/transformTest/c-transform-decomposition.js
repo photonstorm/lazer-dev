@@ -193,49 +193,56 @@ class Mat4x4 {
 
 class Transform {
     constructor(name, parent = null) {
-            this.parent = {
-                prev: null,
-                next: null,
-                head: null,
-                owner: null
-            };
-            this.children = {
-                prev: null,
-                next: null,
-                head: null,
-                owner: null
-            };
-            this.parent.prev = this.parent;
-            this.parent.next = this.parent;
-            this.parent.head = this.parent;
-            this.parent.owner = this;
-            this.children.prev = this.children;
-            this.children.next = this.children;
-            this.children.head = this.children;
-            this.children.owner = this;
+        this.parent = {
+            prev: null,
+            next: null,
+            head: null,
+            owner: null
+        };
+        this.children = {
+            prev: null,
+            next: null,
+            head: null,
+            owner: null
+        };
+        this.parent.prev = this.parent;
+        this.parent.next = this.parent;
+        this.parent.head = this.parent;
+        this.parent.owner = this;
+        this.children.prev = this.children;
+        this.children.next = this.children;
+        this.children.head = this.children;
+        this.children.owner = this;
 
-            this.root = null;
-            this.localMatrix = new Mat4x4();
-            this.transformDecomposition = new Float32Array(4);
-            this.setParent(parent);
+        this.root = null;
+        this.localMatrix = new Mat4x4();
+        this.worldMatrix = new Mat4x4();
+        this.transformDecomposition = new Float32Array(4);
+        this.setParent(parent);
 
-            this.name = name;
-        }
-        // Transform
-    localTranslate(x, y) {
+        this.name = name;
+    }
+
+    // Transform
+    translate(x, y) {
         this.localMatrix.translate(x, y);
         return this;
     }
-    localScale(x, y) {
+    scale(x, y) {
         this.localMatrix.scale(x, y);
         return this;
     }
-    localRotate(t) {
-            this.localMatrix.rotate(t);
-            return this;
-        }
-        // Matrix Decomposition
-    getLocalTranslate() {
+    rotate(t) {
+        this.localMatrix.rotate(t);
+        return this;
+    }
+    loadIdentity() {
+        this.localMatrix.loadIdentity();
+        return this;
+    }
+
+    // Matrix Decomposition
+    getTranslate() {
         let translate = this.transformDecomposition.subarray(0, 2),
             localMatrix = this.localMatrix;
 
@@ -243,7 +250,7 @@ class Transform {
         translate[1] = localMatrix.data[7];
         return translate;
     }
-    getLocalScale() {
+    getScale() {
         let scale = this.transformDecomposition.subarray(2, 4),
             localMatrix = this.localMatrix,
             a = localMatrix.data[0],
@@ -261,7 +268,7 @@ class Transform {
         scale[1] = sy;
         return scale;
     }
-    getLocalRotation() {
+    getRotation() {
         let localMatrix = this.localMatrix,
             a = localMatrix.data[0],
             b = localMatrix.data[1],
@@ -269,8 +276,8 @@ class Transform {
             d = localMatrix.data[5],
             a2 = a * a,
             c2 = c * c;
-       
-        return Acos(a / Sqrt(a2 + c2)) * (Atan(-c / a) < 0 ? -1 : 1);        
+
+        return Acos(a / Sqrt(a2 + c2)) * (Atan(-c / a) < 0 ? -1 : 1);
     }
 
     // Intrusive List Methods
@@ -354,32 +361,43 @@ function assert(expr, message) {
     }
 }
 
-function vec2Equal(v, x, y) {
-    return v[0] === x && v[1] === y;
-}
-
 function TestMatrixDecomposition() {
     console.log('----');
     console.log('TestMatrixDecomposition');
 
     let tempTrans = new Transform('t');
 
-    tempTrans.localTranslate(110, 130);
-    tempTrans.localRotate(2);
-    tempTrans.localScale(2, 1);
+    tempTrans.translate(110, 130);
+    tempTrans.rotate(2);
+    tempTrans.scale(2, 1);
 
     console.log(
-        'Translate', tempTrans.getLocalTranslate(),
-        'Scale', tempTrans.getLocalScale(),
-        'Rotation', (tempTrans.getLocalRotation()|0)
+        'Translate', tempTrans.getTranslate(),
+        'Scale', tempTrans.getScale(),
+        'Rotation', (tempTrans.getRotation() | 0)
     );
 
+    function vec2Equal(v, x, y) {
+        return v[0] === x && v[1] === y;
+    }
+
     assert(
-        vec2Equal(tempTrans.getLocalTranslate(), 110, 130) &&
-        vec2Equal(tempTrans.getLocalScale(), 2, 1) &&
-        (tempTrans.getLocalRotation()|0) === 2
-        ,'Failed to decompose transform matrix'
-    );    
+        vec2Equal(tempTrans.getTranslate(), 110, 130) &&
+        vec2Equal(tempTrans.getScale(), 2, 1) &&
+        (tempTrans.getRotation() | 0) === 2, 'Failed to decompose transform matrix'
+    );
+
+    tempTrans.loadIdentity();
+    console.log(
+        'Translate', tempTrans.getTranslate(),
+        'Scale', tempTrans.getScale(),
+        'Rotation', (tempTrans.getRotation() | 0)
+    );
+    assert(
+        vec2Equal(tempTrans.getTranslate(), 0, 0) &&
+        vec2Equal(tempTrans.getScale(), 1, 1) &&
+        (tempTrans.getRotation() | 0) === 0, 'Failed to load identity matrix'
+    );
 }
 
 function TestIntrusiveList() {
