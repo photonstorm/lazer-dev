@@ -235,15 +235,6 @@ function mulVec2Mat4(v, m, r) {
 	return r;
 }
 
-function mulVec2xF32Mat4(v, m) {
-	var data = m.data,
-		vx = v[0],
-		vy = v[1];
-
-	v[0] = data[0] * vx + data[1] * vy + data[2] * 1.0 + data[3] * 1.0;
-	v[1] = data[4] * vx + data[5] * vy + data[6] * 1.0 + data[7] * 1.0;
-}
-
 class Transform {
 	constructor(name) {
 		// Intrusive List Data
@@ -268,57 +259,14 @@ class Transform {
 		this._parent = parent;
 		this._children = children;
 		// Transform Data
-		//this.localMatrix = new Mat4x4();
-		//this._translation = new Vec2(0, 0);
+		this.localMatrix = new Mat4x4();
+		this._translation = new Vec2(0, 0);
 		this.dirty = true;
-		this.transformMatrix = new Mat4x4();
-		this.localPosition = new Vec2(0, 0);
-		this.localScale = new Vec2(1, 1);
-		this.localRotation = 0;
 
-		var position = new Float32Array(2);
-		var _this = this;
-		this.position = {
-			get x() {
-				if (_this.dirty) {
-					mulVec2xF32Mat4(position, this.transformMatrix);
-					_this.dirty = false;
-				}
-				return position[0];
-			}
-			get y() {
-				if (_this.dirty) {
-					mulVec2xF32Mat4(position, this.transformMatrix);
-					_this.dirty = false;
-				}
-				return position[1];
-			}
-		};
 		// for test purpose only
 		this.name = name;
 	}
-	applyParentTransform() {
-		this.transformMatrix.mul(this._parent.head.owner.this.transformMatrix);
-		return this;
-	}
-	applyTranslate(x, y) {
-		this.transformMatrix.translate(x, y);
-		return this;
-	}
-	applyScale(x, y) {
-		this.transformMatrix.scale(x, y);
-		return this;
-	}
-	applyRotation(t) {
-		this.transformMatrix.rotate(t);
-		return this;
-	}
-	applyTransform(t) {
-		this.transformMatrix.mul(t);
-		return this;
-	}
-
-	/*get positionX() {
+	get positionX() {
 		this.updateTree();
 		return this._translation.x;
 	}
@@ -372,7 +320,7 @@ class Transform {
 	toString() {
 		this.updateTree();
 		return '[ Transform trans:' + this._translation.toString() + ' ]';
-	}*/
+	}
 
 	// Intrusive List Methods
 	removeParent() {
