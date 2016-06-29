@@ -1,3 +1,10 @@
+let Cos = Math.cos;
+let Sin = Math.sin;
+let Sqrt = Math.sqrt;
+let PI = Math.PI;
+let Atan = Math.atan;
+let Acos = Math.acos;
+
 class Mat4x4 {
     constructor(
         a = 1.0, b = 0.0, c = 0.0, d = 0.0,
@@ -219,3 +226,234 @@ class TransformStack {
         this.currentMatrix.loadMat(this.matrixStack[--this.matrixStackPointer]);
     }
 }
+
+function CompileShader(gl, src, type) {
+    var shader = gl.createShader(type);
+    gl.shaderSource(shader, src);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.log('WebGL %s Shader Error: %s', type === gl.FRAGMENT_SHADER ? 'Fragment' : type === gl.VERTEX_SHADER ? 'Vertex' : 'Undefined', gl.getShaderInfoLog(shader));
+        throw 'Shader Error';
+        return null;
+    }
+    return shader;
+}
+
+class Shader {
+    constructor(gl, vSource, fSource) {
+        this.gl = gl;
+        this.program = gl.createProgram();
+        this.vertexShader = CompileShader(gl, vSource, gl.VERTEX_SHADER);
+        this.fragmentShader = CompileShader(gl, fSource, gl.FRAGMENT_SHADER);
+        gl.attachShader(this.program, this.vertexShader);
+        gl.attachShader(this.program, this.fragmentShader);
+        gl.linkProgram(this.program);
+        if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+            console.log('WebGL Program Error: %s', gl.getProgramInfoLog(this.program));
+            throw 'Shader Error';
+        }
+    }
+    getAttribLocation(name) {
+        return this.gl.getAttribLocation(this.program, name);
+    }
+    getUniformLocation(name) {
+        return this.gl.getUniformLocation(this.program, name);
+    }
+    enable() {
+        this.gl.useProgram(this.program);
+    }
+    disable() {
+        this.gl.useProgram(null);
+    }
+    discard() {
+        let gl = this.gl;
+        gl.deleteShader(this.vertexShader);
+        gl.deleteShader(this.fragmentShader);
+        gl.deleteProgram(this.program);
+    }
+}
+
+class MatrixStackGLRenderer {
+    constructor(gl, width, height) {
+        const MAX_SPRITES = 20000;
+        const FLOAT_SIZE = 4;
+        const MAX_VERTICES = MAX_SPRITES * 6;
+        const MAX_POS_COUNT = MAX_VERTICES * 2;
+        const MAX_COLOR_COUNT = MAX_VERTICES * 4;
+        const POS_BUFFER_SIZE = MAX_VERTICES * 2 * FLOAT_SIZE;
+        const COL_BUFFER_SIZE = MAX_VERTICES * 4 * FLOAT_SIZE;
+        let location = null;
+
+        this.gl = gl;
+        this.transformMatrix = new TransformStack(100);
+        this.shader = new Shader(
+            gl, [
+                'precision mediump float;',
+                'attribute vec2 inPos;',
+                'attribute vec4 inColor;',
+                'varying vec4 outColor;',
+                'uniform mat4 constViewMatrix;',
+                'void main() {',
+                '   gl_Position = constViewMatrix * vec4(inPos, 1.0, 1.0);',
+                '   outColor = inColor;',
+                '}'
+            ].join('\n'), [
+                'precision mediump float;',
+                'varying vec4 outColor;',
+                'void main() {',
+                '   gl_FragColor = outColor;',
+                '}'
+            ].join('\n')
+        );
+        this.shader.enable();
+        // Allocate vertex position buffers
+        location = this.shader.getAttribLocation('inPos');
+        this.positionVBO = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.positionVBO);
+        gl.bufferData(gl.ARRAY_BUFFER, POS_BUFFER_SIZE, gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(location);
+        gl.vertexAttribPointer(location, 2, gl.FLOAT, gl.FALSE, 0, 0);
+        this.positionData = new Float32Array(MAX_COLOR_COUNT);
+        // Allocate vertex color buffers
+        location = this.shader.getAttribLocation('inColor');
+        this.colorVBO = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.colorVBO);
+        gl.bufferData(gl.ARRAY_BUFFER, COL_BUFFER_SIZE, gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(location);
+        gl.vertexAttribPointer(location, 4, gl.FLOAT, gl.FALSE, 0, 0);
+        this.colorData = new Float32Array(MAX_COLOR_COUNT);
+        // Set view matrix
+        gl.uniformMatrix4fv(
+            this.shader.getUniformLocation('constViewMatrix'),
+            gl.FALSE,
+            new Float32Array([
+                2 / width, 0, 0, 0,
+                0, -2 / height, 0, 0,
+                0, 0, 1, 1, -1, 1, 0, 0
+            ])
+        );
+        gl.viewport(0, 0, width, height);
+        this.quadCount = 0;
+        this.color = new Float32Array(4);
+        this.color.set([1, 1, 1, 1], 0);
+    }
+    pushMatrix() {
+        this.transformMatrix.pushMatrix();
+    }
+    popMatrix() {
+        this.transformMatrix.popMatrix();
+    }
+    translate(x, y) {
+        this.transformMatrix.translate(x, y);
+    }
+    scale(x, y) {
+        this.transformMatrix.scale(x, y);
+    }
+    rotate(t) {
+        this.transformMatrix.rotate(t);
+    }
+    clearScreen(r, g, b, a = 1.0) {
+        let gl = this.gl;
+        gl.clearColor(r, g, b, a);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+    }
+    setColor(r, g, b) {
+        this.color[0] = r;
+        this.color[1] = g;
+        this.color[2] = b;
+    }
+    setAlpha(a) {
+        this.color[3] = a;
+    }
+    drawRect(x, y, width, height) {
+        let quadCount = this.quadCount;
+        let r = this.color[0];
+        let g = this.color[1];
+        let b = this.color[2];
+        let a = this.color[3];
+        let data = this.transformMatrix.currentMatrix.data;
+        let x0 = x, y0 = y;
+        let x1 = x + width, y1 = y + height;
+        let x2 = x, y2 = y + height;
+        let x3 = x, y3 = y;
+        let x4 = x + width, y4 = y;
+        let x5 = x + width, y5 = y + height;
+        
+        this.positionData.set([
+            data[0] * x0 + data[1] * y0 + data[2] * 1.0 + data[3] * 1.0,
+            data[4] * x0 + data[5] * y0 + data[6] * 1.0 + data[7] * 1.0, 
+            data[0] * x1 + data[1] * y1 + data[2] * 1.0 + data[3] * 1.0,
+            data[4] * x1 + data[5] * y1 + data[6] * 1.0 + data[7] * 1.0,             
+            data[0] * x2 + data[1] * y2 + data[2] * 1.0 + data[3] * 1.0,
+            data[4] * x2 + data[5] * y2 + data[6] * 1.0 + data[7] * 1.0,             
+            data[0] * x3 + data[1] * y3 + data[2] * 1.0 + data[3] * 1.0,
+            data[4] * x3 + data[5] * y3 + data[6] * 1.0 + data[7] * 1.0,             
+            data[0] * x4 + data[1] * y4 + data[2] * 1.0 + data[3] * 1.0,
+            data[4] * x4 + data[5] * y4 + data[6] * 1.0 + data[7] * 1.0,             
+            data[0] * x5 + data[1] * y5 + data[2] * 1.0 + data[3] * 1.0,
+            data[4] * x5 + data[5] * y5 + data[6] * 1.0 + data[7] * 1.0
+        ], quadCount * 2 * 6);
+
+        this.colorData.set([
+            r, g, b, a,
+            r, g, b, a,
+            r, g, b, a,
+            r, g, b, a,
+            r, g, b, a,
+            r, g, b, a
+        ], quadCount * 4 * 6);
+        ++this.quadCount;
+    }
+    flush() {
+        let gl = this.gl;
+        let quadCount = this.quadCount;
+
+        if (quadCount > 0) {
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.positionVBO);
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.positionData.subarray(0, quadCount * 2 * 6));
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.colorVBO);
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.colorData.subarray(0, quadCount * 4 * 6));
+            gl.drawArrays(gl.TRIANGLES, 0, quadCount * 6);
+        }
+        this.quadCount = 0;
+    }
+}
+
+(function main() {
+    let canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 512;
+    let gl = canvas.getContext('experimental-webgl');
+    let renderer = new MatrixStackGLRenderer(gl, canvas.width, canvas.height);
+    let rad = 0.0;
+    let Abs = Math.abs;
+    document.getElementById('game').appendChild(canvas);
+
+    function loop() {
+        requestAnimationFrame(loop);
+        renderer.clearScreen(0, 0, 0);
+        renderer.pushMatrix();
+        renderer.translate(256, 256)
+        renderer.rotate(rad)
+        renderer.scale(Abs(Cos(rad)) + 0.5, Abs(Cos(rad)) + 0.5);
+        renderer.setColor(1, 0, 0);
+        renderer.drawRect(-10, -10, 20, 20);
+        renderer.pushMatrix();
+        renderer.translate(50, 50);
+        renderer.rotate(rad)
+        renderer.scale(Abs(Cos(rad)) + 0.5, Abs(Cos(rad)) + 0.5);
+        renderer.setColor(0, 1, 0);
+        renderer.drawRect(-10, -10, 20, 20);
+        renderer.pushMatrix();
+        renderer.translate(50, 50);
+        renderer.rotate(rad)
+        renderer.scale(Abs(Cos(rad)) + 0.5, Abs(Cos(rad)) + 0.5);
+        renderer.setColor(0, 0, 1);
+        renderer.drawRect(-10, -10, 20, 20);
+        renderer.popMatrix();
+        renderer.popMatrix();
+        renderer.popMatrix();
+        renderer.flush();
+        rad += 0.01;
+    }
+    loop();
+}());
