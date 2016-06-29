@@ -377,6 +377,12 @@ function TestMatrixDecomposition() {
         'Rotation', (tempTrans.getRotation() | 0)
     );
 
+    document.getElementById('game').innerHTML += 'Translate ' +  tempTrans.getTranslate() + '<br>';
+    document.getElementById('game').innerHTML += 'Scale ' +  tempTrans.getScale() + '<br>';
+    document.getElementById('game').innerHTML += 'Rotation ' +  tempTrans.getRotation() + '<br>';
+    document.getElementById('game').innerHTML += '<br>load identity<br><br>';
+
+
     function vec2Equal(v, x, y) {
         return v[0] === x && v[1] === y;
     }
@@ -388,6 +394,9 @@ function TestMatrixDecomposition() {
     );
 
     tempTrans.loadIdentity();
+    document.getElementById('game').innerHTML += 'Translate ' +  tempTrans.getTranslate() + '<br>';
+    document.getElementById('game').innerHTML += 'Scale ' +  tempTrans.getScale() + '<br>';
+    document.getElementById('game').innerHTML += 'Rotation ' +  tempTrans.getRotation() + '<br>';
     console.log(
         'Translate', tempTrans.getTranslate(),
         'Scale', tempTrans.getScale(),

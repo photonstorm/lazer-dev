@@ -407,6 +407,13 @@ function intrusiveListTest() {
 		names += child.name;
 	});
 	assert(names === 'FooBarHelloWorld', 'Invalid children');
+    document.getElementById('game').innerHTML += names + '<br>';
+    document.getElementById('game').innerHTML += 'Parent name:' + t3.getParent().name + '<br>';
+    document.getElementById('game').innerHTML += 'Children count' + t_root.getChildrenCount() + '<br>';
+    document.getElementById('game').innerHTML += 't3 parent name:' + t3.getParent().name + '<br>';
+    document.getElementById('game').innerHTML += 't3 parent name:' + t3.getParent().name + '<br>';
+    document.getElementById('game').innerHTML += 'root children count:' + t_root.getChildrenCount() + '<br>';
+
 	console.log(names);
 	assert(t3.getParent().name === 'IAmRoot', 'Invalid root');
 	console.log('Parent name:', t3.getParent().name);

@@ -301,13 +301,13 @@ function getMaxValue(array) {
     BindComputeTexture(computeTexture1, 1);
     BindComputeTexture(computeTexture2, 2);
     BindComputeTexture(computeTexture3, 3);
-    console.log('Sampling %d 2D vectors', maxComp * 2);
+    document.getElementById('game').innerHTML += 'Sampling ' + (maxComp * 2) + ' 2D vectors<br>';
     t0 = performance.now();
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     t1 = performance.now();
     //var maxValue = getMaxValue(getGPUOutput(maxComp, fbo));
     gpuTime = t1 - t0;
-    console.log('GPU Execution Time: %f milliseconds', gpuTime);
+    document.getElementById('game').innerHTML += 'GPU Execution Time: ' + gpuTime + ' milliseconds<br>';
 
     t0 = performance.now();
     for (var i = 0, aX = 0, aY = 0, bX = 0, bY = 0, sqrt = Math.sqrt; i < maxComp; ++i) {
@@ -320,7 +320,7 @@ function getMaxValue(array) {
     //maxValue = getMaxValue(cpuOutput);
     t1 = performance.now();
     cpuTime = t1 - t0;
-    console.log('CPU Execution Time: %f milliseconds', cpuTime);
+    document.getElementById('game').innerHTML += 'CPU Execution Time: ' + cpuTime + ' milliseconds<br>';
 
     // Cleanup
     UnbindFramebuffer();
