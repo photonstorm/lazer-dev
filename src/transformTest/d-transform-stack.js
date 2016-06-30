@@ -275,7 +275,7 @@ class Shader {
 
 class MatrixStackGLRenderer {
     constructor(gl, width, height) {
-        const MAX_SPRITES = 20000;
+        const MAX_SPRITES = 500000;
         const FLOAT_SIZE = 4;
         const MAX_VERTICES = MAX_SPRITES * 6;
         const MAX_POS_COUNT = MAX_VERTICES * 2;
@@ -285,7 +285,7 @@ class MatrixStackGLRenderer {
         let location = null;
 
         this.gl = gl;
-        this.transformMatrix = new TransformStack(100);
+        this.transformMatrix = new TransformStack(500000);
         this.shader = new Shader(
             gl, [
                 'precision mediump float;',
@@ -372,26 +372,32 @@ class MatrixStackGLRenderer {
         let b = this.color[2];
         let a = this.color[3];
         let data = this.transformMatrix.currentMatrix.data;
-        let x0 = x, y0 = y;
-        let x1 = x + width, y1 = y + height;
-        let x2 = x, y2 = y + height;
-        let x3 = x, y3 = y;
-        let x4 = x + width, y4 = y;
-        let x5 = x + width, y5 = y + height;
-        
+        let x0 = x,
+            y0 = y;
+        let x1 = x + width,
+            y1 = y + height;
+        let x2 = x,
+            y2 = y + height;
+        let x3 = x,
+            y3 = y;
+        let x4 = x + width,
+            y4 = y;
+        let x5 = x + width,
+            y5 = y + height;
+
         this.positionData.set([
-            data[0] * x0 + data[1] * y0 + data[2] * 1.0 + data[3] * 1.0,
-            data[4] * x0 + data[5] * y0 + data[6] * 1.0 + data[7] * 1.0, 
-            data[0] * x1 + data[1] * y1 + data[2] * 1.0 + data[3] * 1.0,
-            data[4] * x1 + data[5] * y1 + data[6] * 1.0 + data[7] * 1.0,             
-            data[0] * x2 + data[1] * y2 + data[2] * 1.0 + data[3] * 1.0,
-            data[4] * x2 + data[5] * y2 + data[6] * 1.0 + data[7] * 1.0,             
-            data[0] * x3 + data[1] * y3 + data[2] * 1.0 + data[3] * 1.0,
-            data[4] * x3 + data[5] * y3 + data[6] * 1.0 + data[7] * 1.0,             
-            data[0] * x4 + data[1] * y4 + data[2] * 1.0 + data[3] * 1.0,
-            data[4] * x4 + data[5] * y4 + data[6] * 1.0 + data[7] * 1.0,             
-            data[0] * x5 + data[1] * y5 + data[2] * 1.0 + data[3] * 1.0,
-            data[4] * x5 + data[5] * y5 + data[6] * 1.0 + data[7] * 1.0
+            data[0] * x0 + data[1] * y0 + data[2] + data[3],
+            data[4] * x0 + data[5] * y0 + data[6] + data[7],
+            data[0] * x1 + data[1] * y1 + data[2] + data[3],
+            data[4] * x1 + data[5] * y1 + data[6] + data[7],
+            data[0] * x2 + data[1] * y2 + data[2] + data[3],
+            data[4] * x2 + data[5] * y2 + data[6] + data[7],
+            data[0] * x3 + data[1] * y3 + data[2] + data[3],
+            data[4] * x3 + data[5] * y3 + data[6] + data[7],
+            data[0] * x4 + data[1] * y4 + data[2] + data[3],
+            data[4] * x4 + data[5] * y4 + data[6] + data[7],
+            data[0] * x5 + data[1] * y5 + data[2] + data[3],
+            data[4] * x5 + data[5] * y5 + data[6] + data[7]
         ], quadCount * 2 * 6);
 
         this.colorData.set([
@@ -426,6 +432,7 @@ class MatrixStackGLRenderer {
     let renderer = new MatrixStackGLRenderer(gl, canvas.width, canvas.height);
     let rad = 0.0;
     let Abs = Math.abs;
+    const quads = 200;
     document.getElementById('game').appendChild(canvas);
 
     function loop() {
@@ -433,27 +440,19 @@ class MatrixStackGLRenderer {
         renderer.clearScreen(0, 0, 0);
         renderer.pushMatrix();
         renderer.translate(256, 256)
-        renderer.rotate(rad)
-        renderer.scale(Abs(Cos(rad)) + 0.5, Abs(Cos(rad)) + 0.5);
-        renderer.setColor(1, 0, 0);
-        renderer.drawRect(-10, -10, 20, 20);
-        renderer.pushMatrix();
-        renderer.translate(50, 50);
-        renderer.rotate(rad)
-        renderer.scale(Abs(Cos(rad)) + 0.5, Abs(Cos(rad)) + 0.5);
-        renderer.setColor(0, 1, 0);
-        renderer.drawRect(-10, -10, 20, 20);
-        renderer.pushMatrix();
-        renderer.translate(50, 50);
-        renderer.rotate(rad)
-        renderer.scale(Abs(Cos(rad)) + 0.5, Abs(Cos(rad)) + 0.5);
-        renderer.setColor(0, 0, 1);
-        renderer.drawRect(-10, -10, 20, 20);
-        renderer.popMatrix();
-        renderer.popMatrix();
-        renderer.popMatrix();
+        for (let i = 0, abcos = Abs(Cos(rad)); i < quads; ++i) {
+            renderer.rotate(rad)
+            renderer.scale(abcos + 0.1, abcos + 0.1);
+            renderer.setColor((i / quads), abcos, abcos / 2);
+            renderer.drawRect(-10, -10, 20, 20);
+            renderer.pushMatrix();
+            renderer.translate(10, 10);
+        }
+        for (let i = 0; i < quads + 1; ++i) {
+            renderer.popMatrix();
+        }
         renderer.flush();
-        rad += 0.01;
+        rad += 0.002;
     }
     loop();
 }());
