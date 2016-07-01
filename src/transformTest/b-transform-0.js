@@ -454,6 +454,7 @@ function simpleTranslate() {
 	t2.positionX = 3;
 	assert(t3.positionX === 5 && t3.positionY === 2, 'Failed to update chained position');
 	console.log('t3 transform:', t3.positionX, t3.positionY);
+    document.getElementById('game').innerHTML += 't3 transform: x = ' + t3.positionX + ' y = ' + t3.positionY + '<br>';
 }
 
 function transformSingleTest() {
