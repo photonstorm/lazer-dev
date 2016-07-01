@@ -459,8 +459,8 @@ function main() {
         });
     }
     function loop() {
-        //requestAnimationFrame(loop);
-        /*renderer.clearScreen(0, 0, 0);
+        requestAnimationFrame(loop);
+        renderer.clearScreen(0, 0, 0);
         renderer.pushMatrix();
         renderer.translate(256, 256)
         for (let i = 0, abcos = Abs(Cos(rad)); i < quads; ++i) {
@@ -473,27 +473,9 @@ function main() {
         }
         for (let i = 0; i < quads + 1; ++i) {
             renderer.popMatrix();
-        }*/
-        requestAnimationFrame(loop);
-        renderer.clearScreen(0, 0, 0);
-        for (var i = 0; i < quadArray.length; ++i) {
-            var q = quadArray[i];
-            renderer.pushMatrix();
-            renderer.setColor(q.color[0], q.color[1], q.color[2], q.color[3]);
-            renderer.translate(q.x, q.y);
-            renderer.rotate(q.r);
-            renderer.drawRect(-5, -5, 10, 10);            
-            renderer.popMatrix();
-            q.r = -rad;
         }
-        renderer.pushMatrix();
-        renderer.translate(mx, my);
-        renderer.rotate(rad);
-        renderer.setColor(1, 1, 1);
-        renderer.drawRect(-50, -50, 100, 100);
-        renderer.popMatrix();
         renderer.flush();
-        rad += 0.01;
+        rad += 0.005;
         fpsMeter.tick();
     }
     loop();
